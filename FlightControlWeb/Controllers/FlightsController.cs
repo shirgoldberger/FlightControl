@@ -83,8 +83,8 @@ namespace FlightControlWeb.Controllers
             _context.Flight.Add(flight);
             await _context.SaveChangesAsync();
 
-            //return CreatedAtAction("GetFlight", new { id = .Id }, flight);
-            return CreatedAtAction(nameof(GetFlight), new { id = flight.Id }, flight);
+            return CreatedAtAction("GetFlight", new { id = flight.Id }, flight);
+            //return CreatedAtAction(nameof(GetFlight), new { id = flight.Id }, flight);
         }
 
         // DELETE: api/Flights/5

@@ -8585,7 +8585,8 @@
   },
   "packageFolders": {
     "C:\\Users\\eliad\\.nuget\\packages\\": {},
-    "C:\\Microsoft\\Xamarin\\NuGet\\": {}
+    "C:\\Microsoft\\Xamarin\\NuGet\\": {},
+    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
@@ -8597,7 +8598,8 @@
       "outputPath": "C:\\Users\\eliad\\Source\\Repos\\FlightControl\\FlightControlWeb\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "C:\\Microsoft\\Xamarin\\NuGet\\"
+        "C:\\Microsoft\\Xamarin\\NuGet\\",
+        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
         "C:\\Users\\eliad\\AppData\\Roaming\\NuGet\\NuGet.Config",

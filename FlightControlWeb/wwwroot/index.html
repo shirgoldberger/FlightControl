@@ -1,66 +1,54 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-    <meta charset="utf-8">
-    <title>Simple Polylines</title>
-    <style>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
 
-        /* Always set the map height explicitly to define the size of the div
-        * element that contains the map. */
+    <!-- jQuery library -->
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Popper JS -->
+    <script src="bootstrap/js/jquery-3.4.1.slim.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="bootstrap/js/popper.min.js"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+          integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+          crossorigin="" />
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+            integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+            crossorigin="">
+    </script>
+    <style>
         #map {
-            height: 400px; /* The height is 400 pixels */
-            width: 60%; /* The width is the width of the web page */
-        }
-        /* Optional: Makes the sample page fill the window. */
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
+            height: 400px;
+            width: 600px;
         }
     </style>
 </head>
+
 <body>
-    <section id="map"></section>
-    <aside>
-        <p>fdgdfgdf</p>
-        <p>fdgdfgdf</p>
-        <p>fdgdfgdf</p>
-        <p>fdgdfgdf</p>
-    </aside>
-    <footer>gdfhfdghgdfhfgfdhgdfgdfhfdgnfgdg</footer>
-    <script>
+    <div id="map"></div>
+    <div class="container">
+        <script>
+            var map = L.map('map').setView([51.505, -0.09], 13);
 
-        // This example creates a 2-pixel-wide red polyline showing the path of
-        // the first trans-Pacific flight between Oakland, CA, and Brisbane,
-        // Australia which was made by Charles Kingsford Smith.
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
 
-        function initMap() {
-            var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 3,
-                center: { lat: 0, lng: -180 },
-                mapTypeId: 'terrain'
-            });
+            L.marker([51.5, -0.09]).addTo(map)
+                .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
+                .openPopup();
+        </script>
+    </div>
 
-            var flightPlanCoordinates = [
-                { lat: 37.772, lng: -122.214 },
-                { lat: 21.291, lng: -157.821 },
-                { lat: -18.142, lng: 178.431 },
-                { lat: -27.467, lng: 153.027 }
-            ];
-            var flightPath = new google.maps.Polyline({
-                path: flightPlanCoordinates,
-                geodesic: true,
-                strokeColor: '#FF0000',
-                strokeOpacity: 1.0,
-                strokeWeight: 2
-            });
+    <!--<div class="container p-3 my-3 border"></div>
 
-            flightPath.setMap(map);
-        }
-    </script>
-    <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCxynRgKaKI8hJPx6DhLV8ASAWG020oVBQ&callback&callback=initMap">
-    </script>
-</body>
-</html>
+        <div class="container p-3 my-3 bg-dark text-white"></div>
+
+        <div class="container p-3 my-3 bg-primary text-white"></div> -->
+    </body>
+    </html>

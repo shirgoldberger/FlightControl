@@ -7,6 +7,7 @@ namespace FlightControlWeb
 {
     public class segment
     {
+        public int Id { get; set; }
         public double Longitude { get; set; }
         public double Latitude { get; set; }
         public int timespan_seconds { get; set; }

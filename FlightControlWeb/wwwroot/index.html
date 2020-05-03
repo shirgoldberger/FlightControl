@@ -1,37 +1,66 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Simple Polylines</title>
     <style>
-        /* Set the size of the div element that contains the map */
+
+        /* Always set the map height explicitly to define the size of the div
+        * element that contains the map. */
         #map {
             height: 400px; /* The height is 400 pixels */
             width: 60%; /* The width is the width of the web page */
         }
+        /* Optional: Makes the sample page fill the window. */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
     </style>
 </head>
 <body>
-    <h3>My Google kkkk   Demo</h3>
-    <!--The div element for the map -->
-    <div id="map"></div>
+    <section id="map"></section>
+    <aside>
+        <p>fdgdfgdf</p>
+        <p>fdgdfgdf</p>
+        <p>fdgdfgdf</p>
+        <p>fdgdfgdf</p>
+    </aside>
+    <footer>gdfhfdghgdfhfgfdhgdfgdfhfdgnfgdg</footer>
     <script>
-        // Initialize and add the map
+
+        // This example creates a 2-pixel-wide red polyline showing the path of
+        // the first trans-Pacific flight between Oakland, CA, and Brisbane,
+        // Australia which was made by Charles Kingsford Smith.
+
         function initMap() {
-            // The location of Uluru
-            var uluru = { lat: -25.344, lng: 131.036 };
-            // The map, centered at Uluru
-            var map = new google.maps.Map(
-                document.getElementById('map'), { zoom: 4, center: uluru });
-            // The marker, positioned at Uluru
-            var marker = new google.maps.Marker({ position: uluru, map: map });
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 3,
+                center: { lat: 0, lng: -180 },
+                mapTypeId: 'terrain'
+            });
+
+            var flightPlanCoordinates = [
+                { lat: 37.772, lng: -122.214 },
+                { lat: 21.291, lng: -157.821 },
+                { lat: -18.142, lng: 178.431 },
+                { lat: -27.467, lng: 153.027 }
+            ];
+            var flightPath = new google.maps.Polyline({
+                path: flightPlanCoordinates,
+                geodesic: true,
+                strokeColor: '#FF0000',
+                strokeOpacity: 1.0,
+                strokeWeight: 2
+            });
+
+            flightPath.setMap(map);
         }
     </script>
-    <!--Load the API from the specified URL
-    * The async attribute allows the browser to render the page while the API loads
-    * The key parameter will contain your own API key (which is not needed for this tutorial)
-    * The callback parameter executes the initMap() function
-    -->
     <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCxynRgKaKI8hJPx6DhLV8ASAWG020oVBQ&callback=initMap">
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCxynRgKaKI8hJPx6DhLV8ASAWG020oVBQ&callback&callback=initMap">
     </script>
 </body>
 </html>

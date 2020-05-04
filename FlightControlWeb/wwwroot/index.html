@@ -54,6 +54,8 @@
             margin-right: 150px;
             margin-left: -540px;
             margin-top: 5px;
+    
+            grid-row-end: 0;
         }
 
         #title {
@@ -76,7 +78,7 @@
             <button id="portIp" type="button" class="btn btn-info">Set Port &amp; Ip</button>
         </div>
         <div id="map" class="map"></div>
-        <scridpt>
+        <script>
             var map = L.map('map').setView([51.505, -0.09], 13);
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -86,7 +88,7 @@
             L.marker([51.5, -0.09]).addTo(map)
                 .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
                 .openPopup();
-        </scridpt>
+        </script>
         <img id="image" src="leaflet/images/drag.JPG" class="image" alt="Cinque Terre">
 
     </div>

@@ -59,6 +59,10 @@
             "bootstrap": {
               "target": "Package",
               "version": "[4.4.1, )"
+            },
+            "knockoutjs": {
+              "target": "Package",
+              "version": "[3.5.1, )"
             }
           },
           "imports": [

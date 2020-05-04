@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "dMDBqgMxf+4tcaiDpVObtinqY2qdDCO/0QMBmPlCwchPp2H4TI3b4wP6L/ONWa6TFkK9HNdMlf1UoPYtD7cD6A==",
+  "dgSpecHash": "2R9dXYbyMRvolTOMroIXQnAlpARgue31PodwjohaZW73fp7NfckUHibgeDCS2O4XB79P4NnWua5pcNV858j3MQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\Shir\\Source\\Repos\\FlightControl\\FlightControlWeb\\FlightControlWeb.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Shir\\.nuget\\packages\\bootstrap\\4.4.1\\bootstrap.4.4.1.nupkg.sha512",
     "C:\\Users\\Shir\\.nuget\\packages\\jquery\\3.0.0\\jquery.3.0.0.nupkg.sha512",
+    "C:\\Users\\Shir\\.nuget\\packages\\knockoutjs\\3.5.1\\knockoutjs.3.5.1.nupkg.sha512",
     "C:\\Users\\Shir\\.nuget\\packages\\microsoft.aspnetcore.html.abstractions\\2.2.0\\microsoft.aspnetcore.html.abstractions.2.2.0.nupkg.sha512",
     "C:\\Users\\Shir\\.nuget\\packages\\microsoft.aspnetcore.razor\\2.2.0\\microsoft.aspnetcore.razor.2.2.0.nupkg.sha512",
     "C:\\Users\\Shir\\.nuget\\packages\\microsoft.aspnetcore.razor.language\\3.1.0\\microsoft.aspnetcore.razor.language.3.1.0.nupkg.sha512",

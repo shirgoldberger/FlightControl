@@ -21,15 +21,16 @@
             integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
             crossorigin="">
     </script>
+
+
+
     <style>
         .grid-container {
             display: grid;
             grid-template-columns: auto auto auto auto auto auto auto auto auto auto auto auto auto auto;
             grid-template-rows: auto auto auto auto auto auto auto auto auto auto auto auto auto auto;
             background-color: #484848;
-            color: white;
-            font-size: 25px;
-            font-weight: bold;
+            height: 100%;
         }
 
         .map {
@@ -54,13 +55,15 @@
             margin-right: 150px;
             margin-left: -540px;
             margin-top: 5px;
-    
             grid-row-end: 0;
         }
 
         #title {
             margin-left: 80px;
             margin-top: 5px;
+            color: white;
+            font-size: 25px;
+            font-weight: bold;
         }
     </style>
     <meta charset="utf-8">
@@ -71,32 +74,32 @@
 </head>
 
 <body>
-    
-    <div class="grid-container">
-        <a id="title">Flight Control</a>
-        <div>
-            <button id="portIp" type="button" class="btn btn-info">Set Port &amp; Ip</button>
+    <script src="app.js">
+
+    </script>
+    <div class="container">
+        <div class="page-header">
+            <h1>Books Service</h1>
         </div>
-        <div id="map" class="map"></div>
-        <script>
-            var map = L.map('map').setView([51.505, -0.09], 13);
-
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(map);
-
-            L.marker([51.5, -0.09]).addTo(map)
-                .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
-                .openPopup();
-        </script>
-        <img id="image" src="leaflet/images/drag.JPG" class="image" alt="Cinque Terre">
-
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2 class="panel-title">Books</h2>
+                    </div>
+                    <div class="panel-body">
+                        <ul class="list-unstyled" data-bind="foreach: Flight">
+                            <li>
+                                <span data-bind="text: Flight.Id"
+                                      style="fontweight:bold"></span>:
+                                <span data-bind="text: Flight.Latitude"></span>
+                                <a href="#" style="font-size:smaller">Details</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-        <!--<div class="container p-3 my-3 border"></div>
-
-            <div class="container p-3 my-3 bg-dark text-white"></div>
-
-            <div class="container p-3 my-3 bg-primary text-white"></div> -->
 </body>
-    </html>
+</html>

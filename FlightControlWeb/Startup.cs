@@ -32,8 +32,6 @@ namespace FlightControlWeb
             services.AddDbContext<FightsDbContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("FightsDbContext")));
 
-            services.AddDbContext<FlightControlWebContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("FlightControlWebContext")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -12,6 +12,9 @@
       "jQuery/3.0.0": {
         "type": "package"
       },
+      "knockoutjs/3.5.1": {
+        "type": "package"
+      },
       "Microsoft.AspNetCore.Html.Abstractions/2.2.0": {
         "type": "package",
         "dependencies": {
@@ -2768,6 +2771,19 @@
         "Tools/uninstall.ps1",
         "jquery.3.0.0.nupkg.sha512",
         "jquery.nuspec"
+      ]
+    },
+    "knockoutjs/3.5.1": {
+      "sha512": "5Acbwk98GvNEevZdAWANyKd3UZWXh0ULy+nlfF2K7Qe47oQbSsEVWD9K6wddXGPn/dmeVy67WnKi8H9Z+HpS1A==",
+      "type": "package",
+      "path": "knockoutjs/3.5.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Content/Scripts/knockout-3.5.1.debug.js",
+        "Content/Scripts/knockout-3.5.1.js",
+        "knockoutjs.3.5.1.nupkg.sha512",
+        "knockoutjs.nuspec"
       ]
     },
     "Microsoft.AspNetCore.Html.Abstractions/2.2.0": {
@@ -8771,7 +8787,8 @@
       "Microsoft.EntityFrameworkCore.Sqlite >= 3.1.2",
       "Microsoft.EntityFrameworkCore.Tools >= 3.1.2",
       "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 3.1.2",
-      "bootstrap >= 4.4.1"
+      "bootstrap >= 4.4.1",
+      "knockoutjs >= 3.5.1"
     ]
   },
   "packageFolders": {
@@ -8832,6 +8849,10 @@
           "bootstrap": {
             "target": "Package",
             "version": "[4.4.1, )"
+          },
+          "knockoutjs": {
+            "target": "Package",
+            "version": "[3.5.1, )"
           }
         },
         "imports": [

@@ -30,17 +30,7 @@ namespace FlightControlWeb
                 {
                     var logger = services.GetRequiredService<ILogger<Program>>();
                     logger.LogError(ex, "An error occured creating the DB.");
-                }
-                try
-                {
-                    var contex = services.GetRequiredService<FlightControlWebContext>();
-                    contex.Database.EnsureCreated();
-                }
-                catch (Exception ex)
-                {
-                    var logger = services.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "An error occured creating the DB.");
-                }
+                }   
             }
             host.Run();
         }

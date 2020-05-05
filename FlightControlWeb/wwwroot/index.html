@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
 
     <!-- jQuery library -->
-    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="bootstrap/js/jquery-3.4.1.slim.min.js"></script>
 
     <!-- Popper JS -->
     <script src="bootstrap/js/jquery-3.4.1.slim.min.js"></script>
@@ -21,7 +21,7 @@
             integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
             crossorigin="">
     </script>
-
+    <script src="js/knockout-3.5.1.js"></script>
 
 
     <style>
@@ -71,12 +71,11 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="js/knockout-3.5.1.js"></script>
+
 </head>
 
 <body>
-    <script src="app.js">
-
-    </script>
     <div class="container">
         <div class="page-header">
             <h1>Books Service</h1>
@@ -88,12 +87,22 @@
                         <h2 class="panel-title">Books</h2>
                     </div>
                     <div class="panel-body">
-                        <ul class="list-unstyled" data-bind="foreach: Flight">
+                        <ul class="list-unstyled" data-bind="foreach: flight">
                             <li>
-                                <span data-bind="text: Flight.Id"
-                                      style="fontweight:bold"></span>:
-                                <span data-bind="text: Flight.Latitude"></span>
-                                <a href="#" style="font-size:smaller">Details</a>
+                                Name at position <span data-bind="text: $index"> </span>:
+
+                                <span data-bind="text: $data.company_name"
+                                      style="font-weight:bold"></span>:
+                                <span data-bind="text: $data.is_external"></span>
+                                <script>
+                                    function myFunction() {
+                                        document.getElementById("demo").innerHTML = "Paragraph changed.";
+                                    }
+                                </script>
+                                <p id="demo">A Paragraph.</p>
+
+                                <a href="#" style="font-size:smaller" data-bind="click: $parent.removePlace">Details</a>
+
                             </li>
                         </ul>
                     </div>
@@ -101,5 +110,27 @@
             </div>
         </div>
     </div>
+    <!-- ko if:currFlight() -->
+    <div class="col-sm-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h2 class="panel-title">Details</h2>
+            </div>
+            <table class="table">
+                <tr>
+                    <td>Company_name</td>
+                    <td data-bind="text: currFlight().company_name"></td>
+                </tr>
+                <tr><td>Longitude</td><td data-bind="text: currFlight().longitude"></td></tr>
+                <tr><td>Latitude</td><td data-bind="text: currFlight().latitude"></td></tr>
+                <tr><td>Passengers</td><td data-bind="text: currFlight().passengers"></td></tr>
+                <tr><td>Date_time</td><td data-bind="text: currFlight().date_time"></td></tr>
+                <tr><td>Is_external</td><td data-bind="text: currFlight().is_external"></td></tr>
+            </table>
+        </div>
+    </div>
+    <!-- /ko -->
+    <script src="js/app.js"></script>
+
 </body>
-</html>
+</html >

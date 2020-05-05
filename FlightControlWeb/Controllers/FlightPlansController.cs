@@ -5,17 +5,18 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using FlightControlWeb.Data;
 using FlightControlWeb.Models;
 
-namespace FlightControlWeb.Data
+namespace FlightControlWeb.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class FlightPlansController : ControllerBase
     {
-        private FightsDbContext _context;
+        private readonly FlightsDbContext _context;
 
-        public FlightPlansController(FightsDbContext context)
+        public FlightPlansController(FlightsDbContext context)
         {
             _context = context;
         }

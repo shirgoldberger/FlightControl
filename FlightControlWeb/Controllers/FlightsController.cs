@@ -14,9 +14,9 @@ namespace FlightControlWeb.Controllers
     [ApiController]
     public class FlightsController : ControllerBase
     {
-        private readonly FightsDbContext _context;
+        private readonly FlightsDbContext _context;
 
-        public FlightsController(FightsDbContext context)
+        public FlightsController(FlightsDbContext context)
         {
             _context = context;
         }
@@ -84,7 +84,6 @@ namespace FlightControlWeb.Controllers
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetFlight", new { id = flight.Id }, flight);
-            //return CreatedAtAction(nameof(GetFlight), new { id = flight.Id }, flight);
         }
 
         // DELETE: api/Flights/5

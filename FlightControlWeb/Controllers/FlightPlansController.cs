@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using FlightControlWeb.Data;
 using FlightControlWeb.Models;
+using FlightControlWeb.Data;
 
 namespace FlightControlWeb.Controllers
 {
@@ -14,9 +14,9 @@ namespace FlightControlWeb.Controllers
     [ApiController]
     public class FlightPlansController : ControllerBase
     {
-        private readonly FlightsDbContext _context;
+        private readonly FlightDbContext _context;
 
-        public FlightPlansController(FlightsDbContext context)
+        public FlightPlansController(FlightDbContext context)
         {
             _context = context;
         }
@@ -25,14 +25,25 @@ namespace FlightControlWeb.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<FlightPlan>>> GetFlightPlan()
         {
-            return await _context.FlightPlan.ToListAsync();
+            List<FlightPlan> fp = await _context.flightPlan.ToListAsync();
+            foreach (FlightPlan element in fp)
+            {
+                int id = element.Id;
+                var loc = await _context.firstLoc.ToListAsync();
+                var seg = await _context.segments.ToListAsync();
+
+                element.Initial_location = loc.Where(a => a.Id == id).First();
+                element.Segments = seg.Where(a => a.Id == id).ToList();
+                return fp;
+            }
+            return fp;
         }
 
         // GET: api/FlightPlans/5
         [HttpGet("{id}")]
         public async Task<ActionResult<FlightPlan>> GetFlightPlan(int id)
         {
-            var flightPlan = await _context.FlightPlan.FindAsync(id);
+            var flightPlan = await _context.flightPlan.FindAsync(id);
 
             if (flightPlan == null)
             {
@@ -80,7 +91,16 @@ namespace FlightControlWeb.Controllers
         [HttpPost]
         public async Task<ActionResult<FlightPlan>> PostFlightPlan(FlightPlan flightPlan)
         {
-            _context.FlightPlan.Add(flightPlan);
+            _context.flightPlan.Add(flightPlan);
+            var loc = flightPlan.Initial_location;
+            loc.Id = flightPlan.Id;
+            _context.firstLoc.Add(loc);
+            var seg = flightPlan.Segments;
+            foreach (segment element in seg)
+            {
+                element.Id = flightPlan.Id;
+                _context.segments.Add(element);
+            }
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetFlightPlan", new { id = flightPlan.Id }, flightPlan);
@@ -90,13 +110,13 @@ namespace FlightControlWeb.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<FlightPlan>> DeleteFlightPlan(int id)
         {
-            var flightPlan = await _context.FlightPlan.FindAsync(id);
+            var flightPlan = await _context.flightPlan.FindAsync(id);
             if (flightPlan == null)
             {
                 return NotFound();
             }
 
-            _context.FlightPlan.Remove(flightPlan);
+            _context.flightPlan.Remove(flightPlan);
             await _context.SaveChangesAsync();
 
             return flightPlan;
@@ -104,7 +124,7 @@ namespace FlightControlWeb.Controllers
 
         private bool FlightPlanExists(int id)
         {
-            return _context.FlightPlan.Any(e => e.Id == id);
+            return _context.flightPlan.Any(e => e.Id == id);
         }
     }
 }

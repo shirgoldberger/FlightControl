@@ -29,10 +29,10 @@ namespace FlightControlWeb
         {
             services.AddControllers();
 
-            services.AddDbContext<FlightsDbContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("FlightsDbContext")));
-
+            services.AddDbContext<FlightDbContext>(opt =>
+               opt.UseInMemoryDatabase("FlightDbContext"));
         }
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {

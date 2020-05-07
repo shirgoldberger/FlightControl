@@ -1,18 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-
-    <!-- jQuery library -->
-    <script src="bootstrap/js/jquery-3.4.1.slim.min.js"></script>
-
-    <!-- Popper JS -->
-    <script src="bootstrap/js/jquery-3.4.1.slim.min.js"></script>
-
-    <!-- Latest compiled JavaScript -->
-    <script src="bootstrap/js/popper.min.js"></script>
-
+    <link rel="stylesheet" type="text/css" href="css/StyleSheet.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
           integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
           crossorigin="" />
@@ -22,115 +11,44 @@
             crossorigin="">
     </script>
     <script src="js/knockout-3.5.1.js"></script>
-
-
-    <style>
-        .grid-container {
-            display: grid;
-            grid-template-columns: auto auto auto auto auto auto auto auto auto auto auto auto auto auto;
-            grid-template-rows: auto auto auto auto auto auto auto auto auto auto auto auto auto auto;
-            background-color: #484848;
-            height: 100%;
-        }
-
-        .map {
-            height: 400px;
-            width: 800px;
-            grid-row-start: 0;
-            grid-row-end: 3;
-            margin-top: 10px;
-        }
-
-        .image {
-            margin-bottom: 100px;
-            margin-right: 150px;
-            margin-left: 10px;
-            grid-column-start: 2;
-            height: 250px;
-            width: 400px;
-            padding: -100px;
-        }
-
-        #portIp {
-            margin-right: 150px;
-            margin-left: -540px;
-            margin-top: 5px;
-            grid-row-end: 0;
-        }
-
-        #title {
-            margin-left: 80px;
-            margin-top: 5px;
-            color: white;
-            font-size: 25px;
-            font-weight: bold;
-        }
-    </style>
+    <style></style>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <script src="js/knockout-3.5.1.js"></script>
 
 </head>
 
 <body>
-    <div class="container">
-        <div class="page-header">
-            <h1>Books Service</h1>
+
+    <div class="grid-container">
+        <a id="title">Flight Control</a>
+        <div>
+            <button id="portIp" type="button" class="btn btn-info">Set Port &amp; Ip</button>
         </div>
-        <div class="row">
-            <div class="col-sm-4">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h2 class="panel-title">Books</h2>
-                    </div>
-                    <div class="panel-body">
-                        <ul class="list-unstyled" data-bind="foreach: flight">
-                            <li>
-                                Name at position <span data-bind="text: $index"> </span>:
+        <div id="map" class="map"></div>
+        <img id="image" src="leaflet/images/drag.JPG" class="image" alt="Cinque Terre">
 
-                                <span data-bind="text: $data.company_name"
-                                      style="font-weight:bold"></span>:
-                                <span data-bind="text: $data.is_external"></span>
-                                <script>
-                                    function myFunction() {
-                                        document.getElementById("demo").innerHTML = "Paragraph changed.";
-                                    }
-                                </script>
-                                <p id="demo">A Paragraph.</p>
-
-                                <a href="#" style="font-size:smaller" data-bind="click: $parent.removePlace">Details</a>
-
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
-    <!-- ko if:currFlight() -->
-    <div class="col-sm-4">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h2 class="panel-title">Details</h2>
-            </div>
-            <table class="table">
-                <tr>
-                    <td>Company_name</td>
-                    <td data-bind="text: currFlight().company_name"></td>
-                </tr>
-                <tr><td>Longitude</td><td data-bind="text: currFlight().longitude"></td></tr>
-                <tr><td>Latitude</td><td data-bind="text: currFlight().latitude"></td></tr>
-                <tr><td>Passengers</td><td data-bind="text: currFlight().passengers"></td></tr>
-                <tr><td>Date_time</td><td data-bind="text: currFlight().date_time"></td></tr>
-                <tr><td>Is_external</td><td data-bind="text: currFlight().is_external"></td></tr>
-            </table>
-        </div>
+    <div>
+    <table class="table">
+        <tr>
+            <td>Company_name</td>
+            <td id="Company_name"></td>
+        </tr>
+        <tr><td>Longitude</td><td id="Longitude"></td></tr>
+        <tr><td>Latitude</td><td id="Latitude"></td></tr>
+        <tr><td>Passengers</td><td id="Passengers" ></td></tr>
+        <tr><td>Date_time</td><td id="Date_time" ></td></tr>
+        <tr><td>Is_external</td><td id="Is_external" ></td></tr>
+    </table>
     </div>
-    <!-- /ko -->
-    <script src="js/app.js"></script>
+    <script src="js/JavaScript.js"></script>
 
+    <!--<div class="container p-3 my-3 border"></div>
+
+        <div class="container p-3 my-3 bg-dark text-white"></div>
+
+        <div class="container p-3 my-3 bg-primary text-white"></div> -->
 </body>
-</html >
+</html>

@@ -23,7 +23,7 @@ namespace FlightControlWeb
                 //check if the data base is already existing id it doesn't create it.
                 try
                 {
-                    var contex = services.GetRequiredService<FlightsDbContext>();
+                    var contex = services.GetRequiredService<FlightDbContext>();
                     contex.Database.EnsureCreated();
                 }
                 catch (Exception ex)
@@ -31,16 +31,7 @@ namespace FlightControlWeb
                     var logger = services.GetRequiredService<ILogger<Program>>();
                     logger.LogError(ex, "An error occured creating the DB.");
                 }
-                //try
-                //{
-                //    var contex = services.GetRequiredService<FightsPlanDbContext>();
-                //    contex.Database.EnsureCreated();
-                //}
-                //catch (Exception ex)
-                //{
-                //    var logger = services.GetRequiredService<ILogger<Program>>();
-                //    logger.LogError(ex, "An error occured creating the DB.");
-                //}
+
             }
             host.Run();
         }

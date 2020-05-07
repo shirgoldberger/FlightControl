@@ -14,9 +14,9 @@ namespace FlightControlWeb.Controllers
     [ApiController]
     public class FlightsController : ControllerBase
     {
-        private readonly FlightsDbContext _context;
+        private readonly FlightDbContext _context;
 
-        public FlightsController(FlightsDbContext context)
+        public FlightsController(FlightDbContext context)
         {
             _context = context;
         }

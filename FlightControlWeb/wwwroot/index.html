@@ -16,18 +16,21 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
+    <script src="js/Drag.js"></script>
 </head>
 
 <body>
 
     <div class="grid-container">
         <a id="title">Flight Control</a>
+        <!-- drop zone -->
+        <div id="drop_zone" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
+            <p>Drag one or more files to this Drop Zone ...</p>
+        </div>
         <div>
             <button id="portIp" type="button" class="btn btn-info">Set Port &amp; Ip</button>
         </div>
         <div id="map" class="map"></div>
-        <img id="image" src="leaflet/images/drag.JPG" class="image" alt="Cinque Terre">
 
     </div>
     <div>

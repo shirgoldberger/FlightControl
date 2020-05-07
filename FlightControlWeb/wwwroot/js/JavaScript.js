@@ -19,15 +19,14 @@ function g(map) {
         type: "GET",
         url: "/api/Flights",
         dataType: 'json',
-        success: function (jdata) {
+        success: window.setInterval(function (jdata) {
             jdata.forEach(function (item, i) {
-
                 let lat = parseFloat(item.latitude);
                 let long = parseFloat(item.longitude);
                 L.marker([lat, long],{ icon: markerIcon}).addTo(map)
                     .openPopup().on('click', onClick);
             });
-        },
+        }, 5000),
        error: errorCallback
     });
 

@@ -33,7 +33,8 @@ function g(map) {
 
             //add external flights here
             //update flights location
-        }); }, 1000);
+        });
+    }, 1000);
 
 
 }

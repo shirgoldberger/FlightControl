@@ -8,6 +8,7 @@ namespace FlightControlWeb.Models
 {
     public class location
     {
+        [Key]
         public int key { get; set; }
 
         public string Id { get; set; }

@@ -29,7 +29,15 @@
             opacity: 1;
             text-align: center;
             display: none;
+
         }
+        thead, tbody { display: block; }
+
+tbody {
+    height: 370px;       /* Just for the demo          */
+    overflow-y: auto;    /* Trigger vertical scroll    */
+    overflow-x: hidden;  /* Hide the horizontal scroll */
+}
     </style>
     <
 </head>

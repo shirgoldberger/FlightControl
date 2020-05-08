@@ -27,6 +27,7 @@ function g(map) {
                     let long = parseFloat(item.longitude);
                     markers.push(L.marker([lat, long], { icon: markerIcon }).addTo(map)
                         .openPopup().on('click', onClick));
+                    appendItem(item);
                 });
             },
             error: errorCallback
@@ -41,6 +42,17 @@ function g(map) {
 
 function errorCallback(jdata) {
     alert("Error");
+}
+
+function appendItem(item) {
+    let tableRef  = document.getElementById("myFlightsTable").getElementsByTagName('tbody')[0];
+    var row = tableRef.insertRow();
+    var cell1 = row.insertCell(0);
+    var cell2 = row.insertCell(1);
+    var cell3 = row.insertCell(2);
+    cell1.innerHTML = item.flight_id;
+    cell2.innerHTML = item.company_name;
+    cell3.innerHTML = item.date_time;
 }
 
 
@@ -77,7 +89,6 @@ function updatePlan(lat, long, jdata) {
     document.getElementById("Date_time").textContent = plan.date_time;
     document.getElementById("Is_external").textContent = plan.is_external;
 }
-
 
 function createMap() {
     var map = L.map('map').setView([51.505, -0.09], 3);

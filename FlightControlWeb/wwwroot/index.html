@@ -1,54 +1,240 @@
-﻿<!DOCTYPE html>
+﻿﻿
+<!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" type="text/css" href="css/StyleSheet.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
-          integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
-          crossorigin="" />
-    <!-- Make sure you put this AFTER Leaflet's CSS -->
-    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
-            integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
-            crossorigin="">
-    </script>
-    <script src="js/knockout-3.5.1.js"></script>
-    <style></style>
+    <meta charset="utf-8" />
+    <title>Advanced Programming II - FlightControl</title>
+    <link rel="stylesheet" href="leaflet/leaflet.css" />
+    <script src="leaflet/leaflet.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="bootstrap/js/jquery-3.4.1.slim.min.js"></script>
+
+    <!-- Popper JS -->
+    <script src="bootstrap/js/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+
+    <!--Google Maps-->
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+        * element that contains the map. */
+        #map {
+            height: 600px;
+        }
 
+        .overlay-div {
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            opacity: 1;
+            text-align: center;
+            display: none;
+        }
+    </style>
+    <
 </head>
+<body class="bg-dark">
+    <div class="container-fluid pt-3 bg-dark text-white">
+        <div class="row">
+            <div class="ml-4 mt-4 col-lg-2">
+                <!--<img src="images/FlightControlLogo.png" />-->
+                <h2>Flight Control</h2>
+            </div>
+            <div class="mt-4 col-lg-9">
+                <!-- Button to Open the Modal -->
+                <button type="button" class="float-left btn btn-primary" data-toggle="modal" data-target="#setIPModal">
+                    Set IP & Port
+                </button>
+                <!-- Button to Open the Modal -->
+                <button type="button" class="float-left btn btn-primary ml-2" data-toggle="modal" data-target="#serversModal">
+                    Servers
+                </button>
+                <!-- The Modal -->
+                <div class="modal fade" id="setIPModal">
+                    <div class="modal-dialog">
+                        <div class="modal-content bg-dark">
 
-<body>
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                                <h4 class="modal-title">Set IP & Port</h4>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
 
-    <div class="grid-container">
-        <a id="title">Flight Control</a>
-        <div>
-            <button id="portIp" type="button" class="btn btn-info">Set Port &amp; Ip</button>
+                            <!-- Modal body -->
+                            <div class="modal-body">
+                                <form>
+                                    <div class="form-group">
+                                        <label>IP</label>
+                                        <textarea class="form-control" id="IPTextBox" rows="1"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Port</label>
+                                        <textarea class="form-control" id="PorTextBox" rows="1"></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="serversModal">
+                    <div class="modal-dialog">
+                        <div class="modal-content bg-dark">
+
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                                <h4 class="modal-title">Servers</h4>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+
+                            <!-- Modal body -->
+                            <div class="modal-body">
+                                Idan Cohen <br>
+                                Gadidi <br>
+                                Eliad <br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div id="map" class="map"></div>
-        <img id="image" src="leaflet/images/drag.JPG" class="image" alt="Cinque Terre">
-
-    </div>
-    <div>
-    <table class="table">
-        <tr>
-            <td>Company_name</td>
-            <td id="Company_name"></td>
-        </tr>
-        <tr><td>Longitude</td><td id="Longitude"></td></tr>
-        <tr><td>Latitude</td><td id="Latitude"></td></tr>
-        <tr><td>Passengers</td><td id="Passengers" ></td></tr>
-        <tr><td>Date_time</td><td id="Date_time" ></td></tr>
-        <tr><td>Is_external</td><td id="Is_external" ></td></tr>
-    </table>
+        <div class="row">
+            <div class="col-lg-8">
+                <div id="map" class="m-3"></div>
+                <div class="row">
+                    <div class="m-4 p-3 w-100 h-100 rounded-lg border border-primary bg-primary" id="tableCol">
+                        <table class="table text-white">
+                            <thead>
+                                <tr>
+                                    <th>Flight ID</th>
+                                    <th>Company name</th>
+                                    <th>Longitude</th>
+                                    <th>Latitude</th>
+                                    <th>Passengers</th>
+                                    <th>Data time</th>
+                                    <th>External Flight</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td id="flightID"></td>
+                                    <td id="Company_name"></td>
+                                    <td id="Longitude"></td>
+                                    <td id="Latitude"></td>
+                                    <td id="Passengers"></td>
+                                    <td id="Date_time"></td>
+                                    <td id="Is_external"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 pr-5" ondragover="uploadOnDragOver()" style="z-index:2;">
+                <div id="dropArea" class="row overlay-div pr-3" ondragleave="uploadOnDragLeave()" ondrop="uploadOnDrop()">
+                    <div class="w-100 h-100 rounded-lg border border-primary bg-primary">
+                        <div style="display: table; width: 100%; height: 100%; vertical-align: middle;">
+                            <!-- <img src="images/upload.png" class="img-fluid" /> -->
+                            <h3 class="text-white" style="display: table-cell; vertical-align: middle;">
+                                Drag and Drop
+                            </h3>
+                            <form>
+                                <input id="myFlightsInput" type="file" class="w-100 h-100" style="position:absolute;right:0px;top:0;padding:0px 2px; opacity: 0;" multiple />
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <h3 id="myFlightsHeader">My Flights</h3>
+                    <table class="table table-dark table-hover" id="myFlightsTable">
+                        <thead>
+                            <tr>
+                                <th>Flight ID</th>
+                                <th>Company name</th>
+                                <th>Scheduled time of arrival</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>John</td>
+                                <td>John</td>
+                                <td>Doe</td>
+                            </tr>
+                            <tr>
+                                <td>Mary</td>
+                                <td>Mary</td>
+                                <td>Moe</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row">
+                    <h3 id="externalFlightsHeader">External Flights</h3>
+                    <table class="table table-dark table-hover" id="externalFlightsTable">
+                        <thead>
+                            <tr>
+                                <th>Flight ID</th>
+                                <th>Company name</th>
+                                <th>Scheduled time of arrival</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>John</td>
+                                <td>John</td>
+                                <td>Doe</td>
+                            </tr>
+                            <tr>
+                                <td>Mary</td>
+                                <td>Mary</td>
+                                <td>Moe</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
     <script src="js/JavaScript.js"></script>
+    <script>
+        // Drag and Drop
+        function uploadOnDragOver() {
+            document.getElementById("dropArea").style.display = "inline";
+        }
 
-    <!--<div class="container p-3 my-3 border"></div>
+        function uploadOnDragLeave() {
+            document.getElementById("dropArea").style.display = "none";
+        }
+        function uploadOnDrop() {
+            document.getElementById("dropArea").style.display = "none";
+            loadMyFlights();
+        }
 
-        <div class="container p-3 my-3 bg-dark text-white"></div>
-
-        <div class="container p-3 my-3 bg-primary text-white"></div> -->
+        // AJAX
+        const myFlightsTableBody = document.querySelector("#myFlightsTable > tbody");
+        function loadMyFlights() {
+            var myFlightsFile = document.getElementById("myFlightsInput").files[0];
+            const request = new XMLHttpRequest();
+            reque.open("get", "myFlightsFile");
+            request.onload = () => {
+                try {
+                    const json = JSON.parse(request.responseText);
+                    insertMyFlights(json);
+                }
+                catch {
+                    console.warn("Error while loading My Flights");
+                }
+                //need to continue function
+            };
+        }
+    </script>
 </body>
 </html>

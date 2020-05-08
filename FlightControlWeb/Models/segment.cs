@@ -10,7 +10,7 @@ namespace FlightControlWeb.Models
     {
         [Key]
         public int key { get; set; }
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         public double Longitude { get; set; }
         public double Latitude { get; set; }

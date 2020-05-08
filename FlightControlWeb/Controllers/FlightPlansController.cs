@@ -28,12 +28,12 @@ namespace FlightControlWeb.Controllers
             List<FlightPlan> fp = await _context.flightPlan.ToListAsync();
             foreach (FlightPlan element in fp)
             {
-                int id = element.Id;
+                string id = element.Flight_ID;
                 var loc = await _context.firstLoc.ToListAsync();
                 var seg = await _context.segments.ToListAsync();
 
-                element.Initial_location = loc.Where(a => a.Id == id).First();
-                element.Segments = seg.Where(a => a.Id == id).ToList();
+                element.Initial_location = loc.Where(a => !a.Id.Equals(id)).First();
+                element.Segments = seg.Where(a => !a.Id.Equals(id)).ToList();
                 return fp;
             }
             return fp;
@@ -91,14 +91,17 @@ namespace FlightControlWeb.Controllers
         [HttpPost]
         public async Task<ActionResult<FlightPlan>> PostFlightPlan(FlightPlan flightPlan)
         {
+            //create flight with the relevent flight id.
+            //SET ID
+            flightPlan.Flight_ID = "LS - 1234353463";
             _context.flightPlan.Add(flightPlan);
             var loc = flightPlan.Initial_location;
-            loc.Id = flightPlan.Id;
+            loc.Id = flightPlan.Flight_ID;
             _context.firstLoc.Add(loc);
             var seg = flightPlan.Segments;
             foreach (segment element in seg)
             {
-                element.Id = flightPlan.Id;
+                element.Id = flightPlan.Flight_ID;
                 _context.segments.Add(element);
             }
             await _context.SaveChangesAsync();

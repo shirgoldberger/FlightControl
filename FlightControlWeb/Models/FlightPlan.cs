@@ -11,6 +11,9 @@ namespace FlightControlWeb.Models
     {
         public int Id { get; set; }
 
+        [JsonPropertyName("flight_id")]
+        public string Flight_ID { get; set; }
+
         [JsonPropertyName("passengers")]
         public int Passengers { get; set; }
         [JsonPropertyName("company_name")]

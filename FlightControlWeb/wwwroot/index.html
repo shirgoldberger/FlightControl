@@ -216,9 +216,12 @@ tbody {
         }
         function uploadOnDrop() {
             document.getElementById("dropArea").style.display = "none";
-            loadMyFlights();
+            submit();
+            //loadMyFlights();
         }
-
+        function submit() {
+            let name = document.getElementById("myFlightsInput").nodeValue;
+        }
         // AJAX
         const myFlightsTableBody = document.querySelector("#myFlightsTable > tbody");
         function loadMyFlights() {

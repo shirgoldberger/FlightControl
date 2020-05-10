@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using FlightControlWeb.Data;
 using FlightControlWeb.Models;
 
+
 namespace FlightControlWeb.Controllers
 {
     [Route("api/[controller]")]
@@ -23,8 +24,13 @@ namespace FlightControlWeb.Controllers
 
         // GET: api/Flights
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Flight>>> GetFlight()
+        public async Task<ActionResult<IEnumerable<Flight>>> GetFlight([FromQuery] string relative_to)
         {
+            //run over filghtPlans
+            if (relative_to != null) {
+                //return the flights relevent 
+                Console.WriteLine(relative_to);
+            }
             return await _context.Flight.ToListAsync();
         }
 

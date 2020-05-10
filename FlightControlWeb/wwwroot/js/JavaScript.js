@@ -5,6 +5,8 @@
 })
 
 function g(map) {
+    //key = flight_id, value = marker on map
+    const plains = new Map()
     let markerIcon = L.icon({
         iconUrl: '/pic/plain.png',
 
@@ -14,7 +16,7 @@ function g(map) {
         shadowAnchor: [4, 62],  // the same for the shadow
         popupAnchor: [-3, -76] // point from which the popup should open relative to the iconAnchor
     });
-    let markers = [];
+
     setInterval(function () {
         $.ajax({
             type: "GET",
@@ -22,34 +24,43 @@ function g(map) {
             dataType: 'json',
             success: function (jdata) {
                 jdata.forEach(function (item, i) {
-
+                    //current location of the flight
                     let lat = parseFloat(item.latitude);
                     let long = parseFloat(item.longitude);
-                    markers.push(L.marker([lat, long], { icon: markerIcon }).addTo(map)
-                        .openPopup().on('click', onClick));
-                    appendItem(item);
+                    //the flight is already exist
+                    if (plains.has(item.flight_id)) {
+                        let flightMarker = plains.get(item.flight_id);
+                        //set latitude, longitude.
+                        flightMarker.setLatLng([lat, long]);
+                    //new flight
+                    } else {
+                        //create a new marker on map.
+                        let marker = L.marker([lat, long], { icon: markerIcon }).addTo(map)
+                            .openPopup().on('click', onClick);
+                        plains.set(item.flight_id, marker);
+                        appendItem(item);
+                    }
                 });
             },
             error: errorCallback
 
             //add external flights here
-            //update flights location
         });
     }, 1000);
-
-
 }
 
 function errorCallback(jdata) {
     alert("Error");
 }
 
+//create a new row at the initial flights
 function appendItem(item) {
     let tableRef  = document.getElementById("myFlightsTable").getElementsByTagName('tbody')[0];
-    var row = tableRef.insertRow();
-    var cell1 = row.insertCell(0);
-    var cell2 = row.insertCell(1);
-    var cell3 = row.insertCell(2);
+    let row = tableRef.insertRow();
+    row.id.replace(item.flight_id);
+    let cell1 = row.insertCell(0);
+    let cell2 = row.insertCell(1);
+    let cell3 = row.insertCell(2);
     cell1.innerHTML = item.flight_id;
     cell2.innerHTML = item.company_name;
     cell3.innerHTML = item.date_time;

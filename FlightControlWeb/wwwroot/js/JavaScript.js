@@ -49,7 +49,7 @@ function g(map) {
     }, 1000);
 }
 
-function errorCallback(jdata) {
+function errorCallback() {
     alert("Error");
 }
 
@@ -61,9 +61,13 @@ function appendItem(item) {
     let cell1 = row.insertCell(0);
     let cell2 = row.insertCell(1);
     let cell3 = row.insertCell(2);
+    let cell4 = row.insertCell(3);
     cell1.innerHTML = item.flight_id;
     cell2.innerHTML = item.company_name;
     cell3.innerHTML = item.date_time;
+    //cell4.
+    //<td><input type="button" value="Delete Row" onclick="SomeDeleteRowFunction()"></td>
+
 }
 
 

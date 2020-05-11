@@ -1,7 +1,6 @@
-﻿$(document).ready(function () {
+$(document).ready(function () {
     let map = createMap();
     g(map);
-
 })
 
 function g(map) {
@@ -20,27 +19,10 @@ function g(map) {
     setInterval(function () {
         $.ajax({
             type: "GET",
-            url: "/api/Flights",
+            url: "/api/Flights?relative_to=2020-12-27T00:07:00Z",
             dataType: 'json',
             success: function (jdata) {
-                jdata.forEach(function (item, i) {
-                    //current location of the flight
-                    let lat = parseFloat(item.latitude);
-                    let long = parseFloat(item.longitude);
-                    //the flight is already exist
-                    if (plains.has(item.flight_id)) {
-                        let flightMarker = plains.get(item.flight_id);
-                        //set latitude, longitude.
-                        flightMarker.setLatLng([lat, long]);
-                    //new flight
-                    } else {
-                        //create a new marker on map.
-                        let marker = L.marker([lat, long], { icon: markerIcon }).addTo(map)
-                            .openPopup().on('click', onClick);
-                        plains.set(item.flight_id, marker);
-                        appendItem(item);
-                    }
-                });
+                handleFlights(jdata, map, plains, markerIcon);
             },
             error: errorCallback
 
@@ -49,15 +31,38 @@ function g(map) {
     }, 1000);
 }
 
+function handleFlights(jdata, map, plains, markerIcon) {
+    jdata.forEach(function (item, i) {
+        //current location of the flight
+        let lat = parseFloat(item.latitude);
+        let long = parseFloat(item.longitude);
+        //the flight is already exist
+        if (plains.has(item.flight_id)) {
+            let flightMarker = plains.get(item.flight_id);
+            //set latitude, longitude.
+            flightMarker.setLatLng([lat, long]);
+            //new flight
+        } else {
+            //create a new marker on map.
+            let marker = L.marker([lat, long], { icon: markerIcon }).addTo(map)
+                .openPopup().on('click', onClick);
+            marker.id = item.flight_id;
+            plains.set(item.flight_id, marker);
+            appendItem(item, map, plains);
+        }
+    });
+
+
+}
 function errorCallback() {
     alert("Error");
 }
 
 //create a new row at the initial flights
-function appendItem(item) {
+function appendItem(item, map, plains) {
     let tableRef  = document.getElementById("myFlightsTable").getElementsByTagName('tbody')[0];
     let row = tableRef.insertRow();
-    row.id.replace(item.flight_id);
+    row.setAttribute("id", item.flight_id.toString());
     let cell1 = row.insertCell(0);
     let cell2 = row.insertCell(1);
     let cell3 = row.insertCell(2);
@@ -65,11 +70,33 @@ function appendItem(item) {
     cell1.innerHTML = item.flight_id;
     cell2.innerHTML = item.company_name;
     cell3.innerHTML = item.date_time;
-    //cell4.
+    let x = document.createElement("INPUT");
+    x.setAttribute("type", "image");
+    x.setAttribute("src", "pic/garbage.png");
+    x.setAttribute("style", "width: 20px;height: 20px");
+    x.addEventListener("click", function () {
+        deleteRowFunction(item, map, plains);
+    });
+    cell4.appendChild(x);
     //<td><input type="button" value="Delete Row" onclick="SomeDeleteRowFunction()"></td>
 
 }
+function deleteRowFunction(item, map, plains) {
+    // event.target will be the input element.
+    let td = event.target.parentNode;
+    let tr = td.parentNode; // the row to be removed
+    tr.parentNode.removeChild(tr);
+    let trId = tr.id;
+    for (const k of plains.keys()) {
+        if (k.toString() === trId) {
+            let marker = plains.get(k);
+            plains.delete(k);
+            map.removeLayer(marker);
+        }
+    }
 
+    
+}
 
 
 function onClick(e) {
@@ -78,7 +105,7 @@ function onClick(e) {
     var long = coord[1].split(')');
     $.ajax({
         type: "GET",
-        url: "/api/Flights",
+        url: "/api/Flights?relative_to=2020-12-27T00:07:00Z",
         dataType: 'json',
         success: function (jdata) {
             updatePlan(lat[1], long[0],jdata)
@@ -95,7 +122,7 @@ function updatePlan(lat, long, jdata) {
             plan = item;
         }
     });
-    alert(plan.flight_id);
+    //checkkkkif jdata is empty.
     document.getElementById("flightID").textContent = plan.flight_id;
     document.getElementById("Company_name").textContent = plan.company_name;
     document.getElementById("Latitude").textContent = plan.latitude;
@@ -106,7 +133,7 @@ function updatePlan(lat, long, jdata) {
 }
 
 function createMap() {
-    var map = L.map('map').setView([51.505, -0.09], 3);
+    let map = L.map('map').setView([51.505, -0.09], 3);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);

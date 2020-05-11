@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
@@ -8,6 +8,8 @@ namespace FlightControlWeb.Models
 {
     public class Flight
     {
+        [JsonPropertyName("flight_id")]
+
         public int Id { get; set; }
         [JsonPropertyName("longitude")]
 

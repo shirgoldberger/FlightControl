@@ -1,4 +1,4 @@
-﻿﻿
+﻿
 <!DOCTYPE html>
 <html>
 <head>
@@ -154,6 +154,7 @@
                                 <th>Flight ID</th>
                                 <th>Company name</th>
                                 <th>Scheduled time of arrival</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -198,40 +199,6 @@
         </div>
     </div>
     <script src="js/JavaScript.js"></script>
-    <script>
-        // Drag and Drop
-        function uploadOnDragOver() {
-            document.getElementById("dropArea").style.display = "inline";
-        }
-
-        function uploadOnDragLeave() {
-            document.getElementById("dropArea").style.display = "none";
-        }
-        function uploadOnDrop() {
-            document.getElementById("dropArea").style.display = "none";
-            submit();
-            //loadMyFlights();
-        }
-        function submit() {
-            let name = document.getElementById("myFlightsInput").nodeValue;
-        }
-        // AJAX
-        const myFlightsTableBody = document.querySelector("#myFlightsTable > tbody");
-        function loadMyFlights() {
-            var myFlightsFile = document.getElementById("myFlightsInput").files[0];
-            const request = new XMLHttpRequest();
-            reque.open("get", "myFlightsFile");
-            request.onload = () => {
-                try {
-                    const json = JSON.parse(request.responseText);
-                    insertMyFlights(json);
-                }
-                catch {
-                    console.warn("Error while loading My Flights");
-                }
-                //need to continue function
-            };
-        }
-    </script>
+    <script src="js/drag_drop.js"></script>
 </body>
 </html>

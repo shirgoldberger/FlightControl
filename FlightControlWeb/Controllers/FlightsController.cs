@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FlightControlWeb.Data;
 using FlightControlWeb.Models;
-
+using System.Text.RegularExpressions;
 
 namespace FlightControlWeb.Controllers
 {
@@ -22,16 +22,84 @@ namespace FlightControlWeb.Controllers
             _context = context;
         }
 
+        private DateTime ConvertToDateTime(string str)
+        {
+            string pattern = @"(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})Z";
+            if (Regex.IsMatch(str, pattern))
+            {
+                Match match = Regex.Match(str, pattern);
+                int second = Convert.ToInt32(match.Groups[6].Value);
+                int minute = Convert.ToInt32(match.Groups[5].Value);
+                int hour = Convert.ToInt32(match.Groups[4].Value);
+                int day = Convert.ToInt32(match.Groups[3].Value);
+                int month = Convert.ToInt32(match.Groups[2].Value);
+                int year = Convert.ToInt32(match.Groups[1].Value);
+                return new DateTime(year, month, day, hour, minute, second);
+            }
+            else
+            {
+                throw new Exception("Unable to parse.");
+            }
+        }
+
         // GET: api/Flights
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Flight>>> GetFlight([FromQuery] string relative_to)
+        public async Task<ActionResult<IEnumerable<Flight>>> GetFlight([FromQuery] string relative_to, [FromQuery] bool syncAll)
         {
-            //run over filghtPlans
-            if (relative_to != null) {
-                //return the flights relevent 
-                Console.WriteLine(relative_to);
+            List<Flight> flights = new List<Flight>();
+            if (relative_to != null)
+            {
+                DateTime relative = ConvertToDateTime(relative_to);
+                // run over filghtPlans
+                foreach (FlightPlan fp in _context.flightPlan)
+                {
+                    string id = fp.Flight_ID;
+                    var loc = await _context.firstLoc.ToListAsync();
+                    var seg = await _context.segments.ToListAsync();
+
+                    fp.Initial_location = loc.Where(a => a.Id.CompareTo(id) == 0).First();
+                    fp.Segments = seg.Where(a => a.Id.CompareTo(id) == 0).ToList();
+
+                    DateTime start = ConvertToDateTime(fp.Initial_location.date_time);
+                    if (DateTime.Compare(relative, start) < 0)
+                    {
+                        continue;
+                    }
+                    Flight f = new Flight();
+                    double startLat = fp.Initial_location.Latitude;
+                    double startLong = fp.Initial_location.Longitude;
+                    // run over segments
+                    foreach (segment s in fp.Segments)
+                    {
+                        DateTime saveStart = start;
+                        DateTime test =start.AddSeconds(s.timespan_seconds);
+                        if (DateTime.Compare(relative, start) >= 0 &&
+                            DateTime.Compare(relative, test) <= 0)
+                        {
+                            TimeSpan difference = relative - saveStart;
+                            double k = difference.Seconds;
+                            double l = s.timespan_seconds - k;
+                            flights.Add(f);
+                            f.Latitude = (startLat * l + s.Latitude * k) / (l + k);
+                            f.Longitude = (startLong * l + s.Longitude * k) / (l + k);
+                            break;
+                        }
+                        else
+                        {
+                            // save the start location of the segment
+                            startLat = s.Latitude;
+                            startLong = s.Longitude;
+                        }
+                    }
+                    f.Id = fp.Id;
+                    f.Passengers = fp.Passengers;
+                    f.Company_name = fp.Company_name;
+                    // f.date_time
+                    f.Is_external = false;
+                }
             }
-            return await _context.Flight.ToListAsync();
+
+            return flights;
         }
 
         // GET: api/Flights/5

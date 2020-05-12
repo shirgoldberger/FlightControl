@@ -10,27 +10,47 @@ function g(map) {
         iconUrl: '/pic/plain.png',
 
         iconSize: [38, 20], // size of the icon
-        shadowSize: [50, 64], // size of the shadow
-        iconAnchor: [22, 94], // point of the icon which will correspond to marker's location
-        shadowAnchor: [4, 62],  // the same for the shadow
+        iconAnchor: [38, 20], // point of the icon which will correspond to marker's location
         popupAnchor: [-3, -76] // point from which the popup should open relative to the iconAnchor
     });
 
     setInterval(function () {
+        //let d = new Date();
+        let d_ = new Date("December 27, 2020 02:07:00");
+        let date = getUTC(d_);
+        let url = "/api/Flights?relative_to=";
+        url = url.concat(date);
         $.ajax({
             type: "GET",
-            url: "/api/Flights?relative_to=2020-12-27T00:07:00Z",
+            url: url,
             dataType: 'json',
             success: function (jdata) {
                 handleFlights(jdata, map, plains, markerIcon);
             },
             error: errorCallback
 
-            //add external flights here
         });
-    }, 1000);
+    }, 10000);
 }
 
+function getUTC(d) {
+    let day = ('0' + d.getUTCDate()).substr(-2);
+
+    let hours = ('0' + d.getUTCHours()).substr(-2);
+
+    let year = ('0000' + d.getUTCFullYear()).substr(-4);
+
+    let minute  = ('0' + d.getUTCMinutes()).substr(-2);
+
+    let month =('0' + (d.getUTCMonth()+1)).substr(-2);
+
+    let second = ('0' + d.getUTCSeconds()).substr(-2);
+
+    let date = year.concat("-").concat(month).concat("-").concat(day)
+        .concat("T").concat(hours).concat(":").concat(minute).concat(":").concat(second).concat("Z");
+    return date;
+
+}
 function handleFlights(jdata, map, plains, markerIcon) {
     jdata.forEach(function (item, i) {
         //current location of the flight
@@ -81,12 +101,23 @@ function appendItem(item, map, plains) {
     //<td><input type="button" value="Delete Row" onclick="SomeDeleteRowFunction()"></td>
 
 }
+
 function deleteRowFunction(item, map, plains) {
     // event.target will be the input element.
     let td = event.target.parentNode;
     let tr = td.parentNode; // the row to be removed
     tr.parentNode.removeChild(tr);
     let trId = tr.id;
+    let url = "/api/FlightPlans/"
+    url = url.concat(item.flight_id);
+    $.ajax({
+        type: "DELETE",
+        url: url,
+        dataType: 'json',
+        error: errorCallback
+
+        //add external flights here
+    });
     for (const k of plains.keys()) {
         if (k.toString() === trId) {
             let marker = plains.get(k);
@@ -95,7 +126,16 @@ function deleteRowFunction(item, map, plains) {
         }
     }
 
-    
+    //delete filght details if it was presed
+    if (document.getElementById(item.flight_id) != null) {
+        document.getElementById("flightID").textContent = "";
+        document.getElementById("Company_name").textContent = "";
+        document.getElementById("Latitude").textContent = "";
+        document.getElementById("Longitude").textContent = "";
+        document.getElementById("Passengers").textContent = "";
+        document.getElementById("Date_time").textContent = "";
+        document.getElementById("Is_external").textContent = "";
+    }
 }
 
 
@@ -123,6 +163,9 @@ function updatePlan(lat, long, jdata) {
         }
     });
     //checkkkkif jdata is empty.
+    let td = document.getElementById("flight_details");
+    let tr = td.rows[0];
+    tr.id = plan.flight_id;
     document.getElementById("flightID").textContent = plan.flight_id;
     document.getElementById("Company_name").textContent = plan.company_name;
     document.getElementById("Latitude").textContent = plan.latitude;

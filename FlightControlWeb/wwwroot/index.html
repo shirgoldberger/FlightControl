@@ -29,7 +29,6 @@
             opacity: 1;
             text-align: center;
             display: none;
-
         }
     </style>
     <
@@ -105,7 +104,7 @@
                 <div id="map" class="m-3"></div>
                 <div class="row">
                     <div class="m-4 p-3 w-100 h-100 rounded-lg border border-primary bg-primary" id="tableCol">
-                        <table class="table text-white">
+                        <table id="flight_details" class="table text-white">
                             <thead>
                                 <tr>
                                     <th>Flight ID</th>
@@ -140,8 +139,8 @@
                             <h3 class="text-white" style="display: table-cell; vertical-align: middle;">
                                 Drag and Drop
                             </h3>
-                            <form>
-                                <input id="myFlightsInput" type="file" class="w-100 h-100" style="position:absolute;right:0px;top:0;padding:0px 2px; opacity: 0;" multiple />
+                            <form method="post">
+                                <input id="myFlightsInput" type="file" class="w-100 h-100" style="position:absolute;right:0px;top:0;padding:0px 2px; opacity: 0;" />
                             </form>
                         </div>
                     </div>
@@ -199,6 +198,8 @@
         </div>
     </div>
     <script src="js/JavaScript.js"></script>
-    <script src="js/drag_drop.js"></script>
+    <script src="js/Drag.js"></script>
+
+
 </body>
 </html>

@@ -8,16 +8,14 @@ function g(map) {
     const plains = new Map()
     let markerIcon = L.icon({
         iconUrl: '/pic/plain.png',
-
         iconSize: [38, 20], // size of the icon
         iconAnchor: [38, 20], // point of the icon which will correspond to marker's location
         popupAnchor: [-3, -76] // point from which the popup should open relative to the iconAnchor
     });
-
     setInterval(function () {
-        //let d = new Date();
-        let d_ = new Date("December 27, 2020 02:07:00");
+        let d_ = new Date();
         let date = getUTC(d_);
+        console.log(date);
         let url = "/api/Flights?relative_to=";
         url = url.concat(date);
         $.ajax({
@@ -30,26 +28,19 @@ function g(map) {
             error: errorCallback
 
         });
-    }, 10000);
+    }, 1000);
 }
 
 function getUTC(d) {
     let day = ('0' + d.getUTCDate()).substr(-2);
-
     let hours = ('0' + d.getUTCHours()).substr(-2);
-
     let year = ('0000' + d.getUTCFullYear()).substr(-4);
-
-    let minute  = ('0' + d.getUTCMinutes()).substr(-2);
-
-    let month =('0' + (d.getUTCMonth()+1)).substr(-2);
-
+    let minute = ('0' + d.getUTCMinutes()).substr(-2);
+    let month = ('0' + (d.getUTCMonth() + 1)).substr(-2);
     let second = ('0' + d.getUTCSeconds()).substr(-2);
-
     let date = year.concat("-").concat(month).concat("-").concat(day)
         .concat("T").concat(hours).concat(":").concat(minute).concat(":").concat(second).concat("Z");
     return date;
-
 }
 function handleFlights(jdata, map, plains, markerIcon) {
     jdata.forEach(function (item, i) {
@@ -65,7 +56,9 @@ function handleFlights(jdata, map, plains, markerIcon) {
         } else {
             //create a new marker on map.
             let marker = L.marker([lat, long], { icon: markerIcon }).addTo(map)
-                .openPopup().on('click', onClick);
+                .openPopup().on('click', function () {
+                    onClick(item);
+                });
             marker.id = item.flight_id;
             plains.set(item.flight_id, marker);
             appendItem(item, map, plains);
@@ -80,7 +73,7 @@ function errorCallback() {
 
 //create a new row at the initial flights
 function appendItem(item, map, plains) {
-    let tableRef  = document.getElementById("myFlightsTable").getElementsByTagName('tbody')[0];
+    let tableRef = document.getElementById("myFlightsTable").getElementsByTagName('tbody')[0];
     let row = tableRef.insertRow();
     row.setAttribute("id", item.flight_id.toString());
     let cell1 = row.insertCell(0);
@@ -127,52 +120,27 @@ function deleteRowFunction(item, map, plains) {
     }
 
     //delete filght details if it was presed
-    if (document.getElementById(item.flight_id) != null) {
-        document.getElementById("flightID").textContent = "";
-        document.getElementById("Company_name").textContent = "";
-        document.getElementById("Latitude").textContent = "";
-        document.getElementById("Longitude").textContent = "";
-        document.getElementById("Passengers").textContent = "";
-        document.getElementById("Date_time").textContent = "";
-        document.getElementById("Is_external").textContent = "";
-    }
+    document.getElementById("flightID").textContent = "";
+    document.getElementById("Company_name").textContent = "";
+    document.getElementById("Latitude").textContent = "";
+    document.getElementById("Longitude").textContent = "";
+    document.getElementById("Passengers").textContent = "";
+    document.getElementById("Date_time").textContent = "";
+    document.getElementById("Is_external").textContent = "";
+
 }
 
-
-function onClick(e) {
-    var coord = e.latlng.toString().split(',');
-    var lat = coord[0].split('(');
-    var long = coord[1].split(')');
-    $.ajax({
-        type: "GET",
-        url: "/api/Flights?relative_to=2020-12-27T00:07:00Z",
-        dataType: 'json',
-        success: function (jdata) {
-            updatePlan(lat[1], long[0],jdata)
-        },
-        error: errorCallback
-    });
-}
-
-
-function updatePlan(lat, long, jdata) {
-    var plan;
-    jdata.forEach(function (item, i) {
-        if (item.longitude == long && item.latitude == lat) {
-            plan = item;
-        }
-    });
-    //checkkkkif jdata is empty.
+function onClick(item) {
     let td = document.getElementById("flight_details");
     let tr = td.rows[0];
-    tr.id = plan.flight_id;
-    document.getElementById("flightID").textContent = plan.flight_id;
-    document.getElementById("Company_name").textContent = plan.company_name;
-    document.getElementById("Latitude").textContent = plan.latitude;
-    document.getElementById("Longitude").textContent = plan.longitude;
-    document.getElementById("Passengers").textContent = plan.passengers;
-    document.getElementById("Date_time").textContent = plan.date_time;
-    document.getElementById("Is_external").textContent = plan.is_external;
+    tr.id = item.flight_id;
+    document.getElementById("flightID").textContent = item.flight_id;
+    document.getElementById("Company_name").textContent = item.company_name;
+    document.getElementById("Latitude").textContent = item.latitude;
+    document.getElementById("Longitude").textContent = item.longitude;
+    document.getElementById("Passengers").textContent = item.passengers;
+    document.getElementById("Date_time").textContent = item.date_time;
+    document.getElementById("Is_external").textContent = item.is_external;
 }
 
 function createMap() {

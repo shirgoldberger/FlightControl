@@ -10,7 +10,7 @@ namespace FlightControlWeb.Models
     {
         [JsonPropertyName("flight_id")]
 
-        public int Id { get; set; }
+        public string Id { get; set; }
         [JsonPropertyName("longitude")]
 
         public double Longitude { get; set; }

@@ -28,11 +28,11 @@ namespace FlightControlWeb.Controllers
             List<FlightPlan> fp = await _context.flightPlan.ToListAsync();
             foreach (FlightPlan element in fp)
             {
-                string id = element.Flight_ID;
+                string id = element.Id;
                 var loc = await _context.firstLoc.ToListAsync();
                 var seg = await _context.segments.ToListAsync();
 
-                element.Initial_location = loc.Where(a => a.Id.CompareTo(id)==0).First();
+                element.Initial_location = loc.Where(a => a.Id.CompareTo(id) == 0).First();
                 element.Segments = seg.Where(a => a.Id.CompareTo(id) == 0).ToList();
             }
             return fp;
@@ -40,7 +40,7 @@ namespace FlightControlWeb.Controllers
 
         // GET: api/FlightPlans/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<FlightPlan>> GetFlightPlan(int id)
+        public async Task<ActionResult<FlightPlan>> GetFlightPlan(string id)
         {
             var flightPlan = await _context.flightPlan.FindAsync(id);
 
@@ -56,7 +56,7 @@ namespace FlightControlWeb.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutFlightPlan(int id, FlightPlan flightPlan)
+        public async Task<IActionResult> PutFlightPlan(string id, FlightPlan flightPlan)
         {
             if (id != flightPlan.Id)
             {
@@ -92,16 +92,16 @@ namespace FlightControlWeb.Controllers
         {
 
             //SET ID
+            flightPlan.Id = IDGenerator();
             _context.flightPlan.Add(flightPlan);
             //create flight with the relevent flight id. *** the flight id is placed just when adding it to the DataBase
-            flightPlan.Flight_ID = flightPlan.Id.ToString();
             var loc = flightPlan.Initial_location;
-            loc.Id = flightPlan.Flight_ID;
+            loc.Id = flightPlan.Id;
             _context.firstLoc.Add(loc);
             var seg = flightPlan.Segments;
             foreach (segment element in seg)
             {
-                element.Id = flightPlan.Flight_ID;
+                element.Id = flightPlan.Id;
                 _context.segments.Add(element);
             }
             await _context.SaveChangesAsync();
@@ -111,7 +111,7 @@ namespace FlightControlWeb.Controllers
 
         // DELETE: api/FlightPlans/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<FlightPlan>> DeleteFlightPlan(int id)
+        public async Task<ActionResult<FlightPlan>> DeleteFlightPlan(string id)
         {
             var flightPlan = await _context.flightPlan.FindAsync(id);
             if (flightPlan == null)
@@ -125,9 +125,52 @@ namespace FlightControlWeb.Controllers
             return flightPlan;
         }
 
-        private bool FlightPlanExists(int id)
+        private bool FlightPlanExists(string id)
         {
-            return _context.flightPlan.Any(e => e.Id == id);
+            return _context.flightPlan.Any(e => e.Id.CompareTo(id) == 0);
+        }
+        public string IDGenerator()
+        {
+            string id = "";
+            // generates a key
+            char c1 = getLetter();
+            id = id + c1;
+            char c2 = getLetter();
+            id = id + c2;
+            id = id + "-";
+            // generates the numbers
+            int num1 = getNumber();
+            id = id + num1;
+            int num2 = getNumber();
+            id = id + num2;
+            int num3 = getNumber();
+            id = id + num3;
+            int num4 = getNumber();
+            id = id + num4;
+            int num5 = getNumber();
+            id = id + num5;
+            int num6 = getNumber();
+            id = id + num6;
+            int num7 = getNumber();
+            id = id + num7;
+            int num8 = getNumber();
+            id = id + num8;
+            return id;
+        }
+
+        public char getLetter()
+        {
+            var rand = new Random();
+            int num = rand.Next(0, 26);
+            char letter = (char)('A' + num);
+            return letter;
+        }
+
+        public int getNumber()
+        {
+            var rand = new Random();
+            int num = rand.Next(0, 10);
+            return num;
         }
     }
 }

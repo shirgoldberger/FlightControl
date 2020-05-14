@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -53,7 +53,7 @@ namespace FlightControlWeb.Controllers
                 // run over filghtPlans
                 foreach (FlightPlan fp in _context.flightPlan)
                 {
-                    string id = fp.Flight_ID;
+                    string id = fp.Id;
                     var loc = await _context.firstLoc.ToListAsync();
                     var seg = await _context.segments.ToListAsync();
 
@@ -72,7 +72,7 @@ namespace FlightControlWeb.Controllers
                     foreach (segment s in fp.Segments)
                     {
                         DateTime saveStart = start;
-                        DateTime test =start.AddSeconds(s.timespan_seconds);
+                        DateTime test = start.AddSeconds(s.timespan_seconds);
                         if (DateTime.Compare(relative, start) >= 0 &&
                             DateTime.Compare(relative, test) <= 0)
                         {
@@ -120,7 +120,7 @@ namespace FlightControlWeb.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutFlight(int id, Flight flight)
+        public async Task<IActionResult> PutFlight(string id, Flight flight)
         {
             if (id != flight.Id)
             {
@@ -162,7 +162,7 @@ namespace FlightControlWeb.Controllers
 
         // DELETE: api/Flights/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Flight>> DeleteFlight(int id)
+        public async Task<ActionResult<Flight>> DeleteFlight(string id)
         {
             var flight = await _context.Flight.FindAsync(id);
             if (flight == null)
@@ -176,9 +176,9 @@ namespace FlightControlWeb.Controllers
             return flight;
         }
 
-        private bool FlightExists(int id)
+        private bool FlightExists(string id)
         {
-            return _context.Flight.Any(e => e.Id == id);
+            return _context.Flight.Any(e => e.Id.CompareTo(id) == 0);
         }
     }
 }

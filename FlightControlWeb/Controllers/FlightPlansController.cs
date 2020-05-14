@@ -25,13 +25,12 @@ namespace FlightControlWeb.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<FlightPlan>>> GetFlightPlan()
         {
+            var loc = await _context.firstLoc.ToListAsync();
+            var seg = await _context.segments.ToListAsync();
             List<FlightPlan> fp = await _context.flightPlan.ToListAsync();
             foreach (FlightPlan element in fp)
             {
                 string id = element.Id;
-                var loc = await _context.firstLoc.ToListAsync();
-                var seg = await _context.segments.ToListAsync();
-
                 element.Initial_location = loc.Where(a => a.Id.CompareTo(id) == 0).First();
                 element.Segments = seg.Where(a => a.Id.CompareTo(id) == 0).ToList();
             }
@@ -42,8 +41,11 @@ namespace FlightControlWeb.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<FlightPlan>> GetFlightPlan(string id)
         {
+            var loc = await _context.firstLoc.ToListAsync();
+            var seg = await _context.segments.ToListAsync();
             var flightPlan = await _context.flightPlan.FindAsync(id);
-
+            flightPlan.Initial_location = loc.Where(a => a.Id.CompareTo(id) == 0).First();
+            flightPlan.Segments = seg.Where(a => a.Id.CompareTo(id) == 0).ToList();
             if (flightPlan == null)
             {
                 return NotFound();

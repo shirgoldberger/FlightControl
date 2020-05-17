@@ -97,6 +97,7 @@ namespace FlightControlWeb.Controllers
                         }
                     }
                     f.Id = fp.Id;
+                    //date time
                     f.Passengers = fp.Passengers;
                     f.Company_name = fp.Company_name;
                     // f.date_time
@@ -215,7 +216,7 @@ namespace FlightControlWeb.Controllers
 
         // DELETE: api/Flights/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Flight>> DeleteFlight(stri id)
+        public async Task<ActionResult<Flight>> DeleteFlight(string id)
         {
             var flight = await _context.Flight.FindAsync(id);
             if (flight == null)

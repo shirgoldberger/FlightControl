@@ -29,5 +29,7 @@ namespace FlightControlWeb.Models
         [JsonPropertyName("is_external")]
 
         public bool Is_external { get; set; }
+
+        public bool Is_relevant { get; set; }
     }
 }

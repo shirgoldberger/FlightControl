@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using FlightControlWeb.Data;
 using FlightControlWeb.Models;
 using System.Text.RegularExpressions;
+using System.Net;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace FlightControlWeb.Controllers
 {
@@ -44,7 +47,7 @@ namespace FlightControlWeb.Controllers
 
         // GET: api/Flights
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Flight>>> GetFlight([FromQuery] string relative_to, [FromQuery] bool syncAll)
+        public async Task<ActionResult<IEnumerable<Flight>>> GetFlight([FromQuery] string relative_to = null, [FromQuery] bool syncAll = false)
         {
             List<Flight> flights = new List<Flight>();
             if (relative_to != null)
@@ -66,6 +69,7 @@ namespace FlightControlWeb.Controllers
                         continue;
                     }
                     Flight f = new Flight();
+                    f.Is_relevant = false;
                     double startLat = fp.Initial_location.Latitude;
                     double startLong = fp.Initial_location.Longitude;
                     // run over segments
@@ -76,6 +80,7 @@ namespace FlightControlWeb.Controllers
                         if (DateTime.Compare(relative, start) >= 0 &&
                             DateTime.Compare(relative, test) <= 0)
                         {
+                            f.Is_relevant = true;
                             TimeSpan difference = relative - saveStart;
                             double k = difference.Seconds;
                             double l = s.timespan_seconds - k;
@@ -97,22 +102,70 @@ namespace FlightControlWeb.Controllers
                     // f.date_time
                     f.Is_external = false;
                 }
+                if (syncAll)
+                {
+                    List<Flight> externalFlights = null;
+                    foreach (Server s in _context.Server)
+                    {
+                        string get = s.ServerURL + "api/Flights?relative_to=" + relative_to + "&syncAll=false";
+                        externalFlights = GetFlightFromSever<List<Flight>>(get);
+                        foreach (Flight f in externalFlights)
+                        {
+                            f.Is_external = true;
+                        }
+                    }
+                    foreach (Flight f in externalFlights)
+                    {
+                        flights.Add(f);
+                    }
+                }
             }
 
             return flights;
         }
 
+        public static T GetFlightFromSever<T>(string serverUrl)
+        {
+            string get = String.Format(serverUrl);
+            WebRequest request = WebRequest.Create(get);
+            request.Method = "GET";
+            HttpWebResponse response = null;
+            response = (HttpWebResponse)request.GetResponse();
+            string result = null;
+            // get data
+            using (Stream stream = response.GetResponseStream())
+            {
+                StreamReader sr = new StreamReader(stream);
+                result = sr.ReadToEnd();
+                sr.Close();
+            }
+            if (result == "" || result == null)
+            {
+                return default;
+            }
+            T externalFlights = JsonConvert.DeserializeObject<T>(result);
+            return externalFlights;
+        }
+
+
         // GET: api/Flights/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Flight>> GetFlight(int id)
+        public async Task<ActionResult<Flight>> GetFlight(string id)
         {
             var flight = await _context.Flight.FindAsync(id);
-
             if (flight == null)
             {
-                return NotFound();
+                foreach (Server s in _context.Server)
+                {
+                    string get = s.ServerURL + "api/Flights/" + id;
+                    flight = GetFlightFromSever<Flight>(get);
+                    if (flight == null)
+                    {
+                        return NotFound();
+                    }
+                    flight.Is_external = true;
+                }
             }
-
             return flight;
         }
 
@@ -162,7 +215,7 @@ namespace FlightControlWeb.Controllers
 
         // DELETE: api/Flights/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Flight>> DeleteFlight(string id)
+        public async Task<ActionResult<Flight>> DeleteFlight(stri id)
         {
             var flight = await _context.Flight.FindAsync(id);
             if (flight == null)

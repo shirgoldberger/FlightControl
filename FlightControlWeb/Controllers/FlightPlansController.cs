@@ -115,13 +115,22 @@ namespace FlightControlWeb.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<FlightPlan>> DeleteFlightPlan(string id)
         {
+            var loc = await _context.firstLoc.ToListAsync();
+            var seg = await _context.segments.ToListAsync();
             var flightPlan = await _context.flightPlan.FindAsync(id);
             if (flightPlan == null)
             {
                 return NotFound();
             }
-
+            var first_loc = loc.Where(a => a.Id.CompareTo(id) == 0).First();
+            var segments = seg.Where(a => a.Id.CompareTo(id) == 0).ToList();
+            _context.firstLoc.Remove(first_loc);
+            foreach (segment element in segments)
+            {
+                _context.segments.Remove(element);
+            }
             _context.flightPlan.Remove(flightPlan);
+
             await _context.SaveChangesAsync();
 
             return flightPlan;

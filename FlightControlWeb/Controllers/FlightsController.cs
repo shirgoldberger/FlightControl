@@ -50,6 +50,7 @@ namespace FlightControlWeb.Controllers
         public async Task<ActionResult<IEnumerable<Flight>>> GetFlight([FromQuery] string relative_to = null, [FromQuery] bool syncAll = false)
         {
             _context.serverId.Clear();
+            _context.SaveChanges();
             List<Flight> flights = new List<Flight>();
             DateTime relative = new DateTime();
             if (relative_to != null)
@@ -108,7 +109,7 @@ namespace FlightControlWeb.Controllers
                             startLong = s.Longitude;
                         }
                     }
-                    f.Id = fp.Id;
+                    f.Flight_id = fp.Id;
                     //date time
                     f.Passengers = fp.Passengers;
                     f.Company_name = fp.Company_name;
@@ -125,12 +126,10 @@ namespace FlightControlWeb.Controllers
                         foreach (Flight f in externalFlights)
                         {
                             f.Is_external = true;
-                            _context.serverId.Add(f.Id, s);
+                            _context.serverId[f.Flight_id] = s;
+                            flights.Add(f);
+
                         }
-                    }
-                    foreach (Flight f in externalFlights)
-                    {
-                        flights.Add(f);
                     }
                 }
             }
@@ -167,7 +166,7 @@ namespace FlightControlWeb.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutFlight(string id, Flight flight)
         {
-            if (id != flight.Id)
+            if (id != flight.Flight_id)
             {
                 return BadRequest();
             }

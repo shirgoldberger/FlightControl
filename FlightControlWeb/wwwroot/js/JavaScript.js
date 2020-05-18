@@ -44,6 +44,7 @@ function g(map, polyline) {
         console.log(date);
         let url = "/api/Flights?relative_to=";
         url = url.concat(date);
+        url = url.concat("&syncAll=true");
         $.ajax({
             type: "GET",
             url: url,

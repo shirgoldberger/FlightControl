@@ -16,8 +16,9 @@ namespace FlightControlWeb.Data
         public DbSet<FlightPlan> flightPlan { get; set; }
         public DbSet<location> firstLoc { get; set; }
         public DbSet<segment> segments { get; set; }
-        public DbSet<Flight> Flight { get; set; }
         public DbSet<Server> Server { get; set; }
+
+        public Dictionary<string, Server> serverId = new Dictionary<string, Server>();
 
     }
 }

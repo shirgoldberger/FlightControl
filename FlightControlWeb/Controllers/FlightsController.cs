@@ -49,10 +49,22 @@ namespace FlightControlWeb.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Flight>>> GetFlight([FromQuery] string relative_to = null, [FromQuery] bool syncAll = false)
         {
+            _context.serverId.Clear();
             List<Flight> flights = new List<Flight>();
+            DateTime relative = new DateTime();
             if (relative_to != null)
             {
-                DateTime relative = ConvertToDateTime(relative_to);
+                try
+                {
+                    relative = ConvertToDateTime(relative_to);
+                } 
+                catch(Exception e)
+                {
+                    if (e.Message == "Unable to parse.")
+                    {
+                        return new List<Flight>();
+                    }
+                }
                 // run over filghtPlans
                 foreach (FlightPlan fp in _context.flightPlan)
                 {
@@ -113,6 +125,7 @@ namespace FlightControlWeb.Controllers
                         foreach (Flight f in externalFlights)
                         {
                             f.Is_external = true;
+                            _context.serverId.Add(f.Id, s);
                         }
                     }
                     foreach (Flight f in externalFlights)
@@ -148,28 +161,6 @@ namespace FlightControlWeb.Controllers
             return externalFlights;
         }
 
-
-        // GET: api/Flights/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Flight>> GetFlight(string id)
-        {
-            var flight = await _context.Flight.FindAsync(id);
-            if (flight == null)
-            {
-                foreach (Server s in _context.Server)
-                {
-                    string get = s.ServerURL + "api/Flights/" + id;
-                    flight = GetFlightFromSever<Flight>(get);
-                    if (flight == null)
-                    {
-                        return NotFound();
-                    }
-                    flight.Is_external = true;
-                }
-            }
-            return flight;
-        }
-
         // PUT: api/Flights/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
@@ -202,37 +193,35 @@ namespace FlightControlWeb.Controllers
             return NoContent();
         }
 
-        // POST: api/Flights
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPost]
-        public async Task<ActionResult<Flight>> PostFlight(Flight flight)
-        {
-            _context.Flight.Add(flight);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetFlight", new { id = flight.Id }, flight);
-        }
 
         // DELETE: api/Flights/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Flight>> DeleteFlight(string id)
+        public async Task<ActionResult<FlightPlan>> DeleteFlight(string id)
         {
-            var flight = await _context.Flight.FindAsync(id);
-            if (flight == null)
+            var loc = await _context.firstLoc.ToListAsync();
+            var seg = await _context.segments.ToListAsync();
+            var flightPlan = await _context.flightPlan.FindAsync(id);
+            if (flightPlan == null)
             {
                 return NotFound();
             }
+            var first_loc = loc.Where(a => a.Id.CompareTo(id) == 0).First();
+            var segments = seg.Where(a => a.Id.CompareTo(id) == 0).ToList();
+            _context.firstLoc.Remove(first_loc);
+            foreach (segment element in segments)
+            {
+                _context.segments.Remove(element);
+            }
+            _context.flightPlan.Remove(flightPlan);
 
-            _context.Flight.Remove(flight);
             await _context.SaveChangesAsync();
 
-            return flight;
+            return flightPlan;
         }
 
         private bool FlightExists(string id)
         {
-            return _context.Flight.Any(e => e.Id.CompareTo(id) == 0);
+            return _context.flightPlan.Any(e => e.Id.CompareTo(id) == 0);
         }
     }
 }

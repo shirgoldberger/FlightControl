@@ -5,8 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using FlightControlWeb.Models;
 using FlightControlWeb.Data;
+using FlightControlWeb.Models;
+using System.Text.RegularExpressions;
+using System.Net;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace FlightControlWeb.Controllers
 {
@@ -44,11 +48,35 @@ namespace FlightControlWeb.Controllers
             var loc = await _context.firstLoc.ToListAsync();
             var seg = await _context.segments.ToListAsync();
             var flightPlan = await _context.flightPlan.FindAsync(id);
-            flightPlan.Initial_location = loc.Where(a => a.Id.CompareTo(id) == 0).First();
-            flightPlan.Segments = seg.Where(a => a.Id.CompareTo(id) == 0).ToList();
             if (flightPlan == null)
             {
-                return NotFound();
+                //ASK ONLY THE RELEVANT SERVER
+                try
+                {
+                    var s = _context.serverId[id];
+                    if (s == null)
+                    {
+                        return NotFound();
+                    }
+                    string get = s.ServerURL + "api/FlightPlans/" + id;
+                    flightPlan = GetFlightFromSever<FlightPlan>(get);
+                    if (flightPlan == null)
+                    {
+                        return NotFound();
+                    }
+
+                }
+                catch (KeyNotFoundException)
+                {
+                    return NotFound();
+                }
+                
+
+            }
+            else
+            {
+                flightPlan.Initial_location = loc.Where(a => a.Id.CompareTo(id) == 0).First();
+                flightPlan.Segments = seg.Where(a => a.Id.CompareTo(id) == 0).ToList();
             }
 
             return flightPlan;
@@ -182,6 +210,29 @@ namespace FlightControlWeb.Controllers
             var rand = new Random();
             int num = rand.Next(0, 10);
             return num;
+        }
+
+        public static T GetFlightFromSever<T>(string serverUrl)
+        {
+            string get = String.Format(serverUrl);
+            WebRequest request = WebRequest.Create(get);
+            request.Method = "GET";
+            HttpWebResponse response = null;
+            response = (HttpWebResponse)request.GetResponse();
+            string result = null;
+            // get data
+            using (Stream stream = response.GetResponseStream())
+            {
+                StreamReader sr = new StreamReader(stream);
+                result = sr.ReadToEnd();
+                sr.Close();
+            }
+            if (result == "" || result == null)
+            {
+                return default;
+            }
+            T externalFlights = JsonConvert.DeserializeObject<T>(result);
+            return externalFlights;
         }
     }
 }

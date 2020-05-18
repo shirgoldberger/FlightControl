@@ -154,7 +154,8 @@ function rowListener(item, row, planes) {
         }
     }
     //polyline
-    getFlightPlanByItem(item);
+    //idannnn
+    //getFlightPlanByItem(item);
 
 }
 
@@ -183,13 +184,15 @@ function garbageFunc(item, map, planes) {
     //let trId = tr.id;
     //delete flight from database if its a local flight.
     if (!item.is_external) {
-        let url = "/api/FlightPlans/"
+        let url = "/api/Flights/"
         url = url.concat(item.flight_id);
         $.ajax({
             type: "DELETE",
             url: url,
             dataType: 'json',
-            error: errorCallback
+            error: function () {
+                alert("problemm delete");
+            }
         });
     }
 
@@ -198,8 +201,6 @@ function garbageFunc(item, map, planes) {
 
     //delete filght details if it was presed
     deleteFlightDetails(item.flight_id);
-
-
 }
 
 //get a flight and delete it from the markers(planes) list if its there.
@@ -225,12 +226,12 @@ function endOfFlight(item, map, planes) {
     //delete filght details if it was presed
     deleteFlightDetails();
 }
-
+//idannnn
 //if the flight details was shown
 function deleteFlightDetails(flight_id) {
     let flightId = document.getElementById("flightID").textContent;
     if (flight_id === flightId) {
-        document.getElementById("flightID").textContent = "";
+        document.getElementById("flightID").textContent ="";
         document.getElementById("Company_name").textContent = "";
         document.getElementById("Latitude").textContent = "";
         document.getElementById("Longitude").textContent = "";
@@ -285,7 +286,9 @@ function getFlightPlanByItem(item) {
         success: function (jdata) {
             createPolyline(jdata, map, polyline);
         },
-        error: errorCallback
+        error: function () {
+            alert("get error");
+        }
     });
 }
 

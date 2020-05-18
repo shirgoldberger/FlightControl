@@ -30,7 +30,7 @@ namespace FlightControlWeb.Controllers
 
         // GET: api/Servers/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Server>> GetServer(string id)
+        public async Task<ActionResult<Server>> GetServer(int id)
         {
             var server = await _context.Server.FindAsync(id);
 
@@ -46,7 +46,7 @@ namespace FlightControlWeb.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutServer(string id, Server server)
+        public async Task<IActionResult> PutServer(int id, Server server)
         {
             if (id != server.ServerId)
             {
@@ -102,7 +102,7 @@ namespace FlightControlWeb.Controllers
 
         // DELETE: api/Servers/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Server>> DeleteServer(string id)
+        public async Task<ActionResult<Server>> DeleteServer(int id)
         {
             var server = await _context.Server.FindAsync(id);
             if (server == null)
@@ -116,7 +116,7 @@ namespace FlightControlWeb.Controllers
             return server;
         }
 
-        private bool ServerExists(string id)
+        private bool ServerExists(int id)
         {
             return _context.Server.Any(e => e.ServerId == id);
         }

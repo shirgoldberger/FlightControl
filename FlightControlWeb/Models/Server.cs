@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace FlightControlWeb.Models
@@ -9,7 +10,11 @@ namespace FlightControlWeb.Models
     public class Server
     {
         [Key]
-        public string ServerId { get; set; }
+        [JsonPropertyName("ServerId")]
+
+        public int ServerId { get; set; }
+        [JsonPropertyName("ServerURL")]
+
         public string ServerURL { get; set; }
     }
 }

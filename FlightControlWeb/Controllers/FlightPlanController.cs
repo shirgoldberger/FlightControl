@@ -66,6 +66,9 @@ namespace FlightControlWeb.Controllers
                     }
 
                 }
+                catch (System.Net.WebException) {
+                    return NotFound();
+                }
                 catch (KeyNotFoundException)
                 {
                     return NotFound();

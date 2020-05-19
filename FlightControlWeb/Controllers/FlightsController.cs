@@ -122,7 +122,16 @@ namespace FlightControlWeb.Controllers
                     foreach (Server s in _context.Server)
                     {
                         string get = s.ServerURL + "api/Flights?relative_to=" + relative_to;
-                        externalFlights = GetFlightFromSever<List<Flight>>(get);
+
+                        try
+                        {
+                            externalFlights = GetFlightFromSever<List<Flight>>(get);
+
+                        }
+                        catch (System.Net.WebException)
+                        {
+                            continue;
+                        }
                         foreach (Flight f in externalFlights)
                         {
                             f.Is_external = true;

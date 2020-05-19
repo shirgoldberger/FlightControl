@@ -25,7 +25,7 @@ function submit() {
 }
 function postData(jdata) {
     let request = new XMLHttpRequest();
-    request.open("POST", "/api/FlightPlans", true);
+    request.open("POST", "/api/FlightPlan", true);
     request.setRequestHeader("Content-Type", "application/json");
     request.send(jdata);
 }

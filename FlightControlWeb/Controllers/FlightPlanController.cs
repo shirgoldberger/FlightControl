@@ -16,16 +16,16 @@ namespace FlightControlWeb.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class FlightPlansController : ControllerBase
+    public class FlightPlanController : ControllerBase
     {
         private readonly FlightDbContext _context;
 
-        public FlightPlansController(FlightDbContext context)
+        public FlightPlanController(FlightDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/FlightPlans
+        // GET: api/FlightPlan
         [HttpGet]
         public async Task<ActionResult<IEnumerable<FlightPlan>>> GetFlightPlan()
         {
@@ -41,7 +41,7 @@ namespace FlightControlWeb.Controllers
             return fp;
         }
 
-        // GET: api/FlightPlans/5
+        // GET: api/FlightPlan/5
         [HttpGet("{id}")]
         public async Task<ActionResult<FlightPlan>> GetFlightPlan(string id)
         {
@@ -53,12 +53,12 @@ namespace FlightControlWeb.Controllers
                 //ASK ONLY THE RELEVANT SERVER
                 try
                 {
-                    var s = _context.serverId[id];
+                    var s = FlightDbContext.serverId[id];
                     if (s == null)
                     {
                         return NotFound();
                     }
-                    string get = s.ServerURL + "api/FlightPlans/" + id;
+                    string get = s.ServerURL + "api/FlightPlan/" + id;
                     flightPlan = GetFlightFromSever<FlightPlan>(get);
                     if (flightPlan == null)
                     {
@@ -70,7 +70,7 @@ namespace FlightControlWeb.Controllers
                 {
                     return NotFound();
                 }
-                
+
 
             }
             else
@@ -82,7 +82,7 @@ namespace FlightControlWeb.Controllers
             return flightPlan;
         }
 
-        // PUT: api/FlightPlans/5
+        // PUT: api/FlightPlan/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
@@ -114,7 +114,7 @@ namespace FlightControlWeb.Controllers
             return NoContent();
         }
 
-        // POST: api/FlightPlans
+        // POST: api/FlightPlan
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
@@ -139,7 +139,7 @@ namespace FlightControlWeb.Controllers
             return CreatedAtAction("GetFlightPlan", new { id = flightPlan.Id }, flightPlan);
         }
 
-        // DELETE: api/FlightPlans/5
+        // DELETE: api/FlightPlan/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<FlightPlan>> DeleteFlightPlan(string id)
         {

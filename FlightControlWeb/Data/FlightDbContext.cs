@@ -12,14 +12,13 @@ namespace FlightControlWeb.Data
         public FlightDbContext (DbContextOptions<FlightDbContext> options)
             : base(options)
         {
-            serverId = new Dictionary<string, Server>();
         }
         public DbSet<FlightPlan> flightPlan { get; set; }
         public DbSet<location> firstLoc { get; set; }
         public DbSet<segment> segments { get; set; }
         public DbSet<Server> Server { get; set; }
 
-        public Dictionary<string, Server> serverId { get; set; }
+        public static Dictionary<string, Server> serverId  = new Dictionary<string, Server>();
 
     }
 }

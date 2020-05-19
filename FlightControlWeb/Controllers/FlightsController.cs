@@ -47,9 +47,9 @@ namespace FlightControlWeb.Controllers
 
         // GET: api/Flights
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Flight>>> GetFlight([FromQuery] string relative_to = null, [FromQuery] bool syncAll = false)
+        public async Task<ActionResult<IEnumerable<Flight>>> GetFlight([FromQuery] string relative_to = null, [FromQuery] bool sync_all = false)
         {
-            _context.serverId.Clear();
+            FlightDbContext.serverId.Clear();
             _context.SaveChanges();
             List<Flight> flights = new List<Flight>();
             DateTime relative = new DateTime();
@@ -113,20 +113,20 @@ namespace FlightControlWeb.Controllers
                     //date time
                     f.Passengers = fp.Passengers;
                     f.Company_name = fp.Company_name;
-                    // f.date_time
+                    // f.date_time =
                     f.Is_external = false;
                 }
-                if (syncAll)
+                if (sync_all)
                 {
                     List<Flight> externalFlights = null;
                     foreach (Server s in _context.Server)
                     {
-                        string get = s.ServerURL + "api/Flights?relative_to=" + relative_to + "&syncAll=false";
+                        string get = s.ServerURL + "api/Flights?relative_to=" + relative_to;
                         externalFlights = GetFlightFromSever<List<Flight>>(get);
                         foreach (Flight f in externalFlights)
                         {
                             f.Is_external = true;
-                            _context.serverId[f.Flight_id] = s;
+                            FlightDbContext.serverId[f.Flight_id] = s;
                             flights.Add(f);
 
                         }

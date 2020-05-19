@@ -54,7 +54,7 @@ function g(map, polyline) {
         console.log(date);
         let url = "/api/Flights?relative_to=";
         url = url.concat(date);
-        url = url.concat("&syncAll=true");
+        url = url.concat("&sync_all=true");
         $.ajax({
             type: "GET",
             url: url,
@@ -292,7 +292,7 @@ function onClick(item, polyline, e) {
 
 function getFlightPlanByItem(item) {
     //GET flightPlan/flight_ID
-    let url = "/api/FlightPlans/"
+    let url = "/api/FlightPlan/"
     url = url.concat(item.flight_id);
     $.ajax({
         type: "GET",

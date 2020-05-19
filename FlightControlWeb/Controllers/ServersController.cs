@@ -12,23 +12,23 @@ namespace FlightControlWeb.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ServersController : ControllerBase
+    public class serversController : ControllerBase
     {
         private readonly FlightDbContext _context;
 
-        public ServersController(FlightDbContext context)
+        public serversController(FlightDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Servers
+        // GET: api/servers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Server>>> GetServer()
         {
             return await _context.Server.ToListAsync();
         }
 
-        // GET: api/Servers/5
+        // GET: api/servers/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Server>> GetServer(int id)
         {
@@ -42,7 +42,7 @@ namespace FlightControlWeb.Controllers
             return server;
         }
 
-        // PUT: api/Servers/5
+        // PUT: api/servers/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]

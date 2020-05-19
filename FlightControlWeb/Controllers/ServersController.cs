@@ -30,7 +30,7 @@ namespace FlightControlWeb.Controllers
 
         // GET: api/servers/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Server>> GetServer(int id)
+        public async Task<ActionResult<Server>> GetServer(string id)
         {
             var server = await _context.Server.FindAsync(id);
 
@@ -46,9 +46,9 @@ namespace FlightControlWeb.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutServer(int id, Server server)
+        public async Task<IActionResult> PutServer(string id, Server server)
         {
-            if (id != server.ServerId)
+            if (id.CompareTo(server.ServerId) != 0)
             {
                 return BadRequest();
             }
@@ -80,7 +80,9 @@ namespace FlightControlWeb.Controllers
         [HttpPost]
         public async Task<ActionResult<Server>> PostServer(Server server)
         {
+            server.ServerId = IDGenerator();
             _context.Server.Add(server);
+
             try
             {
                 await _context.SaveChangesAsync();
@@ -100,9 +102,51 @@ namespace FlightControlWeb.Controllers
             return CreatedAtAction("GetServer", new { id = server.ServerId }, server);
         }
 
+        public string IDGenerator()
+        {
+            string id = "";
+            int num1 = getNumber();
+            id = id + num1;
+            int num2 = getNumber();
+            id = id + num2;
+            int num3 = getNumber();
+            id = id + num3;
+            id = id + "-";
+            int num4 = getNumber();
+            id = id + num4;
+            int num5 = getNumber();
+            id = id + num5;
+            int num6 = getNumber();
+            id = id + num6;
+            id = id + "-";
+            int num7 = getNumber();
+            id = id + num7;
+            int num8 = getNumber();
+            id = id + num8;
+            int num9 = getNumber();
+            id = id + num9;
+            return id;
+        }
+
+        public char getLetter()
+        {
+            var rand = new Random();
+            int num = rand.Next(0, 26);
+            char letter = (char)('A' + num);
+            return letter;
+        }
+
+        public int getNumber()
+        {
+            var rand = new Random();
+            int num = rand.Next(0, 10);
+            return num;
+        }
+
+
         // DELETE: api/Servers/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Server>> DeleteServer(int id)
+        public async Task<ActionResult<Server>> DeleteServer(string id)
         {
             var server = await _context.Server.FindAsync(id);
             if (server == null)
@@ -116,9 +160,9 @@ namespace FlightControlWeb.Controllers
             return server;
         }
 
-        private bool ServerExists(int id)
+        private bool ServerExists(string id)
         {
-            return _context.Server.Any(e => e.ServerId == id);
+            return _context.Server.Any(e => id.CompareTo(e.ServerId) == 0);
         }
     }
 }

@@ -62,7 +62,7 @@ function g(map, polyline) {
         console.log(date);
         let url = "/api/Flights?relative_to=";
         url = url.concat(date);
-        url = url.concat("&sync_all=true");
+        url = url.concat("&sync_all");
         $.ajax({
             type: "GET",
             url: url,
@@ -75,7 +75,7 @@ function g(map, polyline) {
             }
 
         });
-    }, 2000);
+    }, 1000);
 }
 
 

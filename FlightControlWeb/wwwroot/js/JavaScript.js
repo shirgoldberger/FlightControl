@@ -65,7 +65,7 @@ function g(map, polyline) {
             error: errorCallback
 
         });
-    }, 20000);
+    }, 2000);
 }
 
 function getUTC(d) {

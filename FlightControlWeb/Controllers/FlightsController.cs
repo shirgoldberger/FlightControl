@@ -53,6 +53,7 @@ namespace FlightControlWeb.Controllers
             _context.SaveChanges();
             List<Flight> flights = new List<Flight>();
             DateTime relative = new DateTime();
+            string time = relative.ToString("dddd, dd MMMM yyyy");
             if (relative_to != null)
             {
                 try
@@ -113,7 +114,7 @@ namespace FlightControlWeb.Controllers
                     //date time
                     f.Passengers = fp.Passengers;
                     f.Company_name = fp.Company_name;
-                    // f.date_time =
+                    f.Date_time = time;
                     f.Is_external = false;
                 }
                 if (sync_all)

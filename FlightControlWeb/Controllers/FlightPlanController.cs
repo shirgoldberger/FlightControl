@@ -175,45 +175,32 @@ namespace FlightControlWeb.Controllers
         {
             string id = "";
             // generates a key
-            char c1 = getLetter();
+            char c1 = LocalLibrary.getLetter();
             id = id + c1;
-            char c2 = getLetter();
+            char c2 = LocalLibrary.getLetter();
             id = id + c2;
             id = id + "-";
             // generates the numbers
-            int num1 = getNumber();
+            int num1 = LocalLibrary.getNumber();
             id = id + num1;
-            int num2 = getNumber();
+            int num2 = LocalLibrary.getNumber();
             id = id + num2;
-            int num3 = getNumber();
+            int num3 = LocalLibrary.getNumber();
             id = id + num3;
-            int num4 = getNumber();
+            int num4 = LocalLibrary.getNumber();
             id = id + num4;
-            int num5 = getNumber();
+            int num5 = LocalLibrary.getNumber();
             id = id + num5;
-            int num6 = getNumber();
+            int num6 = LocalLibrary.getNumber();
             id = id + num6;
-            int num7 = getNumber();
+            int num7 = LocalLibrary.getNumber();
             id = id + num7;
-            int num8 = getNumber();
+            int num8 = LocalLibrary.getNumber();
             id = id + num8;
             return id;
         }
 
-        public char getLetter()
-        {
-            var rand = new Random();
-            int num = rand.Next(0, 26);
-            char letter = (char)('A' + num);
-            return letter;
-        }
 
-        public int getNumber()
-        {
-            var rand = new Random();
-            int num = rand.Next(0, 10);
-            return num;
-        }
 
         public static T GetFlightFromSever<T>(string serverUrl)
         {

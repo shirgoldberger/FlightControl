@@ -82,7 +82,7 @@ namespace FlightControlWeb.Controllers
                         continue;
                     }
                     Flight f = new Flight();
-                    f.Is_relevant = false;
+                    //f.Is_relevant = false;
                     double startLat = fp.Initial_location.Latitude;
                     double startLong = fp.Initial_location.Longitude;
                     // run over segments
@@ -93,7 +93,7 @@ namespace FlightControlWeb.Controllers
                         if (DateTime.Compare(relative, start) >= 0 &&
                             DateTime.Compare(relative, test) <= 0)
                         {
-                            f.Is_relevant = true;
+                            //f.Is_relevant = true;
                             TimeSpan difference = relative - saveStart;
                             double k = difference.Seconds;
                             double l = s.timespan_seconds - k;
@@ -131,6 +131,8 @@ namespace FlightControlWeb.Controllers
 
                         }
                     }
+                    _context.SaveChanges();
+
                 }
             }
 

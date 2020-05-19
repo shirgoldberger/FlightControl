@@ -1,5 +1,17 @@
+//idan:
+
+
+
+
 let group = L.layerGroup();
 let polyline;
+let map = createMap();
+let newFlight_Id = [];
+let oldFlight_Id = [];
+let planes = new Map();
+
+
+
 let markedMarkerIcon = L.icon({
     iconUrl: '/pic/marked-plain.png',
     iconSize: [50, 47], // size of the icon
@@ -17,7 +29,6 @@ let markerIcon = L.icon({
 
 
 $(document).ready(function () {
-    let map = createMap();
     group.addTo(map);
     map.on('click', function () {
         group.clearLayers();
@@ -36,7 +47,6 @@ $(document).ready(function () {
 
 function g(map, polyline) {
     //key = flight_id, value = marker on map
-    const planes = new Map();
 
     setInterval(function () {
         let d_ = new Date();
@@ -50,12 +60,12 @@ function g(map, polyline) {
             url: url,
             dataType: 'json',
             success: function (jdata) {
-                handleFlights(jdata, map, planes, markerIcon, polyline);
+                handleFlights(jdata, markerIcon, polyline);
             },
             error: errorCallback
 
         });
-    }, 1000);
+    }, 20000);
 }
 
 function getUTC(d) {
@@ -71,55 +81,70 @@ function getUTC(d) {
 }
 
 
-
-function handleFlights(jdata, map, planes, markerIcon, polyline) {
+function handleFlights(jdata, markerIcon, polyline) {
     jdata.forEach(function (item, i) {
-        if (item.is_relevant) {
-            //current location of the flight
-            let lat = parseFloat(item.latitude);
-            let long = parseFloat(item.longitude);
-            //the flight is already exist
-            if (planes.has(item.flight_id)) {
-                let flightMarker = planes.get(item.flight_id);
-                //set latitude, longitude.
-                flightMarker.setLatLng([lat, long]);
-                //new flight
-            } else {
-                //create a new marker on map.
-                let marker = L.marker([lat, long], { icon: markerIcon }).addTo(map)
-                    .openPopup().on('click', function (e) {
-                        onClick(item, map, polyline, e);
-                    });
-                marker.id = item.flight_id;
-                planes.set(item.flight_id, marker);
-                appendItem(item, map, planes);
-            }
-        }
-        //the flight has been terminated/not started.
-        else {
-            //search if the filght has been terminated and delete it from the table and the map.
-            //if the flight is still on the map, delete it.
-            if (planes.has(item.flight_id)) {
-                endOfFlight(item, map, planes);
-            }
+        //current location of the flight
+        let lat = parseFloat(item.latitude);
+        let long = parseFloat(item.longitude);
+        //enter to new id's list
+        newFlight_Id.push(item.flight_id);
+        //the flight is already exist
+        if (planes.has(item.flight_id)) {
+            let flightMarker = planes.get(item.flight_id);
+            //set latitude, longitude.
+            flightMarker.setLatLng([lat, long]);
+            //new flight
+        } else {
+            //create a new marker on map.
+            let marker = L.marker([lat, long], { icon: markerIcon }).addTo(map)
+                .openPopup().on('click', function (e) {
+                    onClick(item, polyline, e);
+                });
+            marker.id = item.flight_id;
+            planes.set(item.flight_id, marker);
+            appendItem(item);
         }
     });
+    //remove all flights that doesn't apeared at this section.
+    //maybe they were deleted or ended.
+    oldFlight_Id.forEach(removeIrrelevant);
+    //update lists
+    oldFlight_Id = [];
+    oldFlight_Id = newFlight_Id.slice();;
+    newFlight_Id = [];
 
 
+}
+
+function removeIrrelevant(id, index) {
+    if (!newFlight_Id.includes(id)) {
+        //remove flight from view
+        let tr = document.getElementById(id);
+        if (tr) {
+            tr.parentNode.removeChild(tr);
+
+            //delete the marker from the map.
+            deleteMarker(id);
+
+            //delete filght details if it was presed
+            deleteFlightDetails(id);
+        }
+
+    }
 }
 function errorCallback() {
     alert("Error");
 }
 
 //create a new row at the initial flights
-function appendItem(item, map, planes) {
+function appendItem(item) {
     let tableRef = document.getElementById("myFlightsTable").getElementsByTagName('tbody')[0];
     let row = tableRef.insertRow();
     //onClick event
     row.addEventListener("click", function (e) {
-        rowListener(item,row, planes);
+        rowListener(item, row);
     });
-    row.setAttribute("id", item.flight_id.toString());
+    row.setAttribute("id",item.flight_id);
     let cell1 = row.insertCell(0);
     let cell2 = row.insertCell(1);
     let cell3 = row.insertCell(2);
@@ -132,7 +157,7 @@ function appendItem(item, map, planes) {
     x.setAttribute("src", "pic/garbage.png");
     x.setAttribute("style", "width: 20px;height: 20px");
     x.addEventListener("click", function () {
-        garbageFunc(item, map, planes);
+        garbageFunc(item);
     });
     cell4.appendChild(x);
     //<td><input type="button" value="Delete Row" onclick="SomeDeleteRowFunction()"></td>
@@ -140,7 +165,7 @@ function appendItem(item, map, planes) {
 }
 
 
-function rowListener(item, row, planes) {
+function rowListener(item, row) {
     updateDetails(item);
     markRow(row);
     //locate the the the marker with same ID, mark it and show the polyline
@@ -177,7 +202,7 @@ function markRow(row) {
 }
 
 
-function garbageFunc(item, map, planes) {
+function garbageFunc(item) {
     // event.target will be the input element.
     let td = event.target.parentNode;
     let tr = td.parentNode; // the row to be removed
@@ -198,17 +223,17 @@ function garbageFunc(item, map, planes) {
     }
 
     //delete the marker from the map.
-    deleteMarker(item, map, planes);
+    deleteMarker(item.flight_id);
 
     //delete filght details if it was presed
     deleteFlightDetails(item.flight_id);
 }
 
 //get a flight and delete it from the markers(planes) list if its there.
-function deleteMarker(item, map, planes) {
-    if (planes.has(item.flight_id))
+function deleteMarker(id) {
+    if (planes.has(id))
         for (const k of planes.keys()) {
-            if (k.toString() === item.flight_id) {
+            if (k.toString() === id) {
                 let marker = planes.get(k);
                 planes.delete(k);
                 map.removeLayer(marker);
@@ -216,23 +241,12 @@ function deleteMarker(item, map, planes) {
         }
 }
 
-function endOfFlight(item, map, planes) {
-    // event.target will be the input element.
-    let td = event.target.parentNode;
-    let tr = td.parentNode; // the row to be removed
-    tr.parentNode.removeChild(tr);
-    //delete the marker from the map.
-    deleteMarker(item, map, planes);
-
-    //delete filght details if it was presed
-    deleteFlightDetails();
-}
 //idannnn
 //if the flight details was shown
 function deleteFlightDetails(flight_id) {
     let flightId = document.getElementById("flightID").textContent;
     if (flight_id === flightId) {
-        document.getElementById("flightID").textContent ="";
+        document.getElementById("flightID").textContent = "";
         document.getElementById("Company_name").textContent = "";
         document.getElementById("Latitude").textContent = "";
         document.getElementById("Longitude").textContent = "";
@@ -245,7 +259,7 @@ function deleteFlightDetails(flight_id) {
 }
 
 
-function onClick(item, map, polyline, e) {
+function onClick(item, polyline, e) {
     updateDetails(item);
 
     var tds = document.querySelectorAll('#myFlightsTable tbody tr'), i;
@@ -285,7 +299,7 @@ function getFlightPlanByItem(item) {
         url: url,
         dataType: 'json',
         success: function (jdata) {
-            createPolyline(jdata, map, polyline);
+            createPolyline(jdata, polyline);
         },
         error: function () {
             alert("get error");
@@ -294,9 +308,6 @@ function getFlightPlanByItem(item) {
 }
 
 function updateDetails(item) {
-    let td = document.getElementById("flight_details");
-    let tr = td.rows[0];
-    tr.id = item.flight_id;
     document.getElementById("flightID").textContent = item.flight_id;
     document.getElementById("Company_name").textContent = item.company_name;
     document.getElementById("Latitude").textContent = item.latitude;
@@ -308,7 +319,7 @@ function updateDetails(item) {
 
 
 
-function createPolyline(jdata, map, polyline) {
+function createPolyline(jdata, polyline) {
     let segments = jdata.segments;
     let longitude;
     let latitude;

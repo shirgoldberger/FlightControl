@@ -42,7 +42,15 @@ $(document).ready(function () {
         });
     });
     g(map, polyline);
-})
+    $("#success-alert").hide();
+});
+
+function showAlert(message) {
+    document.getElementById("message").innerHTML = message;
+    $("#success-alert").fadeTo(10000, 500).slideUp(500, function () {
+        $("#success-alert").slideUp(500);
+    });
+}
 
 
 function g(map, polyline) {
@@ -62,11 +70,16 @@ function g(map, polyline) {
             success: function (jdata) {
                 handleFlights(jdata, markerIcon, polyline);
             },
-            error: errorCallback
+            error: function () {
+                showAlert("failed to get flights from the server");
+            }
 
         });
     }, 2000);
 }
+
+
+
 
 function getUTC(d) {
     let day = ('0' + d.getUTCDate()).substr(-2);
@@ -132,9 +145,7 @@ function removeIrrelevant(id, index) {
 
     }
 }
-function errorCallback() {
-    alert("Error");
-}
+
 
 //create a new row at the initial flights
 function appendItem(item) {
@@ -156,8 +167,9 @@ function appendItem(item) {
     x.setAttribute("type", "image");
     x.setAttribute("src", "pic/garbage.png");
     x.setAttribute("style", "width: 20px;height: 20px");
-    x.addEventListener("click", function () {
+    x.addEventListener("click", function (e) {
         garbageFunc(item);
+        e.stopPropagation();
     });
     cell4.appendChild(x);
     //<td><input type="button" value="Delete Row" onclick="SomeDeleteRowFunction()"></td>
@@ -181,7 +193,7 @@ function rowListener(item, row) {
     }
     //polyline
     //idannnn
-    //getFlightPlanByItem(item);
+    getFlightPlanByItem(item);
 
 }
 
@@ -217,7 +229,7 @@ function garbageFunc(item) {
             url: url,
             dataType: 'json',
             error: function () {
-                alert("problemm delete");
+                showAlert("failed to delete the flight plan from the server");
             }
         });
     }
@@ -245,7 +257,7 @@ function deleteMarker(id) {
 //if the flight details was shown
 function deleteFlightDetails(flight_id) {
     let flightId = document.getElementById("flightID").textContent;
-    if (flight_id === flightId) {
+    if (flight_id === flightId || flight_id == undefined || flight_id == null) {
         document.getElementById("flightID").textContent = "";
         document.getElementById("Company_name").textContent = "";
         document.getElementById("Latitude").textContent = "";
@@ -254,7 +266,6 @@ function deleteFlightDetails(flight_id) {
         document.getElementById("Date_time").textContent = "";
         document.getElementById("Is_external").textContent = "";
         group.clearLayers();
-
     }
 }
 
@@ -301,8 +312,8 @@ function getFlightPlanByItem(item) {
         success: function (jdata) {
             createPolyline(jdata, polyline);
         },
-        error: function () {
-            alert("get error");
+        error: function() {
+            showAlert("failed to get a flight plan from the server");
         }
     });
 }

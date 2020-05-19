@@ -53,12 +53,14 @@ namespace FlightControlWeb.Controllers
             _context.SaveChanges();
             List<Flight> flights = new List<Flight>();
             DateTime relative = new DateTime();
-            string time = relative.ToString("dddd, dd MMMM yyyy");
+            string time = relative.ToString("MM/dd/yyyy HH:mm:ss"); ;
             if (relative_to != null)
             {
                 try
                 {
                     relative = ConvertToDateTime(relative_to);
+                    time = relative.ToString("MM/dd/yyyy HH:mm:ss");
+                    Console.WriteLine("%s", time);
                 } 
                 catch(Exception e)
                 {

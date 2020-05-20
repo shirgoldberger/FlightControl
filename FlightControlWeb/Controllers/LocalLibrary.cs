@@ -27,19 +27,21 @@ namespace FlightControlWeb.Controllers
             }
             else
             {
-                throw new Exception("Unable to parse.");
+                throw new Exception("Unable to parse");
             }
         }
 
         public static T GetFlightFromServer<T>(string serverUrl)
         {
             string get = String.Format(serverUrl);
+            // Create request.
             WebRequest request = WebRequest.Create(get);
             request.Method = "GET";
             HttpWebResponse response = null;
+            // Get response.
             response = (HttpWebResponse)request.GetResponse();
             string result = null;
-            // get data
+            // Get data - Json file.
             using (Stream stream = response.GetResponseStream())
             {
                 StreamReader sr = new StreamReader(stream);
@@ -50,12 +52,14 @@ namespace FlightControlWeb.Controllers
             {
                 return default;
             }
+            // Convert to object.
             T externalFlights = JsonConvert.DeserializeObject<T>(result);
             return externalFlights;
         }
 
         public static char getLetter()
         {
+            // create rendom letter.
             var rand = new Random();
             int num = rand.Next(0, 26);
             char letter = (char)('A' + num);
@@ -64,6 +68,7 @@ namespace FlightControlWeb.Controllers
 
         public static int getNumber()
         {
+            // create random number.
             var rand = new Random();
             int num = rand.Next(0, 10);
             return num;

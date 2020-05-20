@@ -104,6 +104,7 @@ namespace FlightControlWeb.Controllers
 
         public string IDGenerator()
         {
+            // Create random ID that look like- '000-000-000'.
             string id = "";
             int num1 = LocalLibrary.getNumber();
             id = id + num1;

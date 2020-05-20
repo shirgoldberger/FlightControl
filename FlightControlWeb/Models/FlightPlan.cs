@@ -22,10 +22,10 @@ namespace FlightControlWeb.Models
         [NotMapped]
         [JsonPropertyName("initial_location")]
 
-        public location Initial_location { get; set; }
+        public Location Initial_location { get; set; }
         [JsonPropertyName("segments")]
 
         [NotMapped]
-        public List<segment> Segments { get; set; }
+        public List<Segment> Segments { get; set; }
     }
 }

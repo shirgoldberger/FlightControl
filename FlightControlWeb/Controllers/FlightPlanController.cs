@@ -2,15 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FlightControlWeb.Data;
 using FlightControlWeb.Models;
-using System.Text.RegularExpressions;
 using System.Net;
-using System.IO;
-using Newtonsoft.Json;
 
 namespace FlightControlWeb.Controllers
 {
@@ -48,40 +44,36 @@ namespace FlightControlWeb.Controllers
             var loc = await _context.firstLoc.ToListAsync();
             var seg = await _context.segments.ToListAsync();
             var flightPlan = await _context.flightPlan.FindAsync(id);
-            if (flightPlan == null)
-            {
-                //ASK ONLY THE RELEVANT SERVER
-                try
-                {
-                    var s = FlightDbContext.serverId[id];
-                    if (s == null)
-                    {
-                        return NotFound();
-                    }
-                    string get = s.ServerURL + "api/FlightPlan/" + id;
-                    flightPlan = GetFlightFromSever<FlightPlan>(get);
-                    if (flightPlan == null)
-                    {
-                        return NotFound();
-                    }
-
-                }
-                catch (System.Net.WebException) {
-                    return NotFound();
-                }
-                catch (KeyNotFoundException)
-                {
-                    return NotFound();
-                }
-
-
-            }
-            else
+            if (flightPlan != null)
             {
                 flightPlan.Initial_location = loc.Where(a => a.Id.CompareTo(id) == 0).First();
                 flightPlan.Segments = seg.Where(a => a.Id.CompareTo(id) == 0).ToList();
+                return flightPlan;
             }
+            // Ask only the relevant server.
+            try
+            {
+                var s = FlightDbContext.serverId[id];
+                if (s == null)
+                {
+                    return NotFound();
+                }
+                string get = s.ServerURL + "api/FlightPlan/" + id;
+                flightPlan = LocalLibrary.GetFlightFromServer<FlightPlan>(get);
+                if (flightPlan == null)
+                {
+                    return NotFound();
+                }
 
+            }
+            catch (WebException)
+            {
+                return NotFound();
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
             return flightPlan;
         }
 
@@ -91,7 +83,7 @@ namespace FlightControlWeb.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutFlightPlan(string id, FlightPlan flightPlan)
         {
-            if (id != flightPlan.Id)
+            if (id.CompareTo(flightPlan.Id) != 0)
             {
                 return BadRequest();
             }
@@ -123,16 +115,15 @@ namespace FlightControlWeb.Controllers
         [HttpPost]
         public async Task<ActionResult<FlightPlan>> PostFlightPlan(FlightPlan flightPlan)
         {
-
-            //SET ID
+            // Set ID.
             flightPlan.Id = IDGenerator();
             _context.flightPlan.Add(flightPlan);
-            //create flight with the relevent flight id. *** the flight id is placed just when adding it to the DataBase
+            // Create flight with the relevent flight id. *** the flight id is placed just when adding it to the DataBase.
             var loc = flightPlan.Initial_location;
             loc.Id = flightPlan.Id;
             _context.firstLoc.Add(loc);
             var seg = flightPlan.Segments;
-            foreach (segment element in seg)
+            foreach (Segment element in seg)
             {
                 element.Id = flightPlan.Id;
                 _context.segments.Add(element);
@@ -156,7 +147,7 @@ namespace FlightControlWeb.Controllers
             var first_loc = loc.Where(a => a.Id.CompareTo(id) == 0).First();
             var segments = seg.Where(a => a.Id.CompareTo(id) == 0).ToList();
             _context.firstLoc.Remove(first_loc);
-            foreach (segment element in segments)
+            foreach (Segment element in segments)
             {
                 _context.segments.Remove(element);
             }
@@ -173,14 +164,15 @@ namespace FlightControlWeb.Controllers
         }
         public string IDGenerator()
         {
+            // Create random ID that look like- 'AA-00000000'.
             string id = "";
-            // generates a key
+            // Generates a key.
             char c1 = LocalLibrary.getLetter();
             id = id + c1;
             char c2 = LocalLibrary.getLetter();
             id = id + c2;
             id = id + "-";
-            // generates the numbers
+            // Generates the numbers.
             int num1 = LocalLibrary.getNumber();
             id = id + num1;
             int num2 = LocalLibrary.getNumber();
@@ -198,31 +190,6 @@ namespace FlightControlWeb.Controllers
             int num8 = LocalLibrary.getNumber();
             id = id + num8;
             return id;
-        }
-
-
-
-        public static T GetFlightFromSever<T>(string serverUrl)
-        {
-            string get = String.Format(serverUrl);
-            WebRequest request = WebRequest.Create(get);
-            request.Method = "GET";
-            HttpWebResponse response = null;
-            response = (HttpWebResponse)request.GetResponse();
-            string result = null;
-            // get data
-            using (Stream stream = response.GetResponseStream())
-            {
-                StreamReader sr = new StreamReader(stream);
-                result = sr.ReadToEnd();
-                sr.Close();
-            }
-            if (result == "" || result == null)
-            {
-                return default;
-            }
-            T externalFlights = JsonConvert.DeserializeObject<T>(result);
-            return externalFlights;
         }
     }
 }

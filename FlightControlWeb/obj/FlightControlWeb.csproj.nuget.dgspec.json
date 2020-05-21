@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Shir\\Source\\Repos\\FlightControl\\FlightControlWeb\\FlightControlWeb.csproj": {}
+    "C:\\Users\\Idan\\source\\repos\\FlightControlNew\\FlightControlWeb\\FlightControlWeb.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Shir\\Source\\Repos\\FlightControl\\FlightControlWeb\\FlightControlWeb.csproj": {
+    "C:\\Users\\Idan\\source\\repos\\FlightControlNew\\FlightControlWeb\\FlightControlWeb.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Shir\\Source\\Repos\\FlightControl\\FlightControlWeb\\FlightControlWeb.csproj",
+        "projectUniqueName": "C:\\Users\\Idan\\source\\repos\\FlightControlNew\\FlightControlWeb\\FlightControlWeb.csproj",
         "projectName": "FlightControlWeb",
-        "projectPath": "C:\\Users\\Shir\\Source\\Repos\\FlightControl\\FlightControlWeb\\FlightControlWeb.csproj",
-        "packagesPath": "C:\\Users\\Shir\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Shir\\Source\\Repos\\FlightControl\\FlightControlWeb\\obj\\",
+        "projectPath": "C:\\Users\\Idan\\source\\repos\\FlightControlNew\\FlightControlWeb\\FlightControlWeb.csproj",
+        "packagesPath": "C:\\Users\\Idan\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Idan\\source\\repos\\FlightControlNew\\FlightControlWeb\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Shir\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Idan\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -83,6 +83,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[3.1.2, 3.1.2]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -91,7 +97,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.200\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.300\\RuntimeIdentifierGraph.json"
         }
       }
     }

@@ -9,7 +9,9 @@ let map = createMap();
 let newFlight_Id = [];
 let oldFlight_Id = [];
 let planes = new Map();
-
+let finalLongitude = new Map();
+let finalLatitude = new Map();
+let finalDateTime = new Map();
 
 
 let markedMarkerIcon = L.icon({
@@ -96,6 +98,14 @@ function getUTC(d) {
 
 function handleFlights(jdata, markerIcon, polyline) {
     jdata.forEach(function (item, i) {
+        //update finalLongitude and finalLatitude values
+        if (!(finalLatitude.has(item.flight_id)) || !(finalLongitude.has(item.flight_id))) {
+            getFlightPlanEndLocationByItem(item);
+        }
+        //update FinalDateTime value
+        if (!(finalDateTime.has(item.flight_id))) {
+            getFlightPlanEndDateTimeByItem(item);
+        }
         //current location of the flight
         let lat = parseFloat(item.latitude);
         let long = parseFloat(item.longitude);
@@ -260,10 +270,14 @@ function deleteFlightDetails(flight_id) {
     if (flight_id === flightId || flight_id == undefined || flight_id == null) {
         document.getElementById("flightID").textContent = "";
         document.getElementById("Company_name").textContent = "";
-        document.getElementById("Latitude").textContent = "";
         document.getElementById("Longitude").textContent = "";
+        document.getElementById("Latitude").textContent = "";
+        document.getElementById("Final_Longitude").textContent = "";
+        document.getElementById("Final_Latitude").textContent = "";
+        document.getElementById("Passengers").textContent = "";
         document.getElementById("Passengers").textContent = "";
         document.getElementById("Date_time").textContent = "";
+        document.getElementById("Final_Date_time").textContent = "";
         document.getElementById("Is_external").textContent = "";
         group.clearLayers();
     }
@@ -321,10 +335,13 @@ function getFlightPlanByItem(item) {
 function updateDetails(item) {
     document.getElementById("flightID").textContent = item.flight_id;
     document.getElementById("Company_name").textContent = item.company_name;
-    document.getElementById("Latitude").textContent = item.latitude;
-    document.getElementById("Longitude").textContent = item.longitude;
+    document.getElementById("Latitude").textContent = (item.latitude).toFixed(3);
+    document.getElementById("Longitude").textContent = (item.longitude).toFixed(3);
+    document.getElementById("Final_Latitude").textContent = (finalLatitude.get(item.flight_id)).toFixed(3);
+    document.getElementById("Final_Longitude").textContent = (finalLongitude.get(item.flight_id)).toFixed(3);
     document.getElementById("Passengers").textContent = item.passengers;
     document.getElementById("Date_time").textContent = item.date_time;
+    document.getElementById("Final_Date_time").textContent = finalDateTime.get(item.flight_id);
     document.getElementById("Is_external").textContent = item.is_external;
 }
 
@@ -353,3 +370,59 @@ function createMap() {
     }).addTo(map);
     return map;
 }
+
+function getFlightPlanEndLocationByItem(item) {
+    //GET flightPlan/flight_ID
+    let url = "/api/FlightPlan/"
+    url = url.concat(item.flight_id);
+    $.ajax({
+        type: "GET",
+        url: url,
+        dataType: 'json',
+        success: function (jdata) {
+            getFinalLocation(jdata);
+        },
+        error: function () {
+            alert("get error");
+        }
+    });
+}
+    function getFlightPlanEndDateTimeByItem(item) {
+        //GET flightPlan/flight_ID
+        let url = "/api/FlightPlan/"
+        url = url.concat(item.flight_id);
+        $.ajax({
+            type: "GET",
+            url: url,
+            dataType: 'json',
+            success: function (jdata) {
+                getFinalDateTime(jdata);
+            },
+            error: function () {
+                alert("get error");
+            }
+        });
+    }
+
+    function getFinalLocation(jdata) {
+        let segments = jdata.segments;
+        let flight_id = jdata.flight_id;
+        finalLongitude.set(flight_id, segments[segments.length - 1]["longitude"]);
+        finalLatitude.set(flight_id, segments[segments.length - 1]["latitude"]);
+    }
+
+    function getFinalDateTime(jdata) {
+        let segments = jdata.segments;
+        let date = new Date(jdata.initial_location.date_time);
+        for (let i = 0; i < segments.length; i++) {
+            date.setSeconds(date.getSeconds() + segments[i]["timespan_seconds"]);
+        }
+        var dateStr =
+            ("00" + (date.getMonth() + 1)).slice(-2) + "/" +
+            ("00" + date.getDate()).slice(-2) + "/" +
+            date.getFullYear() + " " +
+            ("00" + date.getHours()).slice(-2) + ":" +
+            ("00" + date.getMinutes()).slice(-2) + ":" +
+            ("00" + date.getSeconds()).slice(-2);
+        finalDateTime.set(jdata.flight_id, dateStr);
+    }

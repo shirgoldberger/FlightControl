@@ -67,7 +67,7 @@ namespace FlightControlWeb.Controllers
         private List<Flight> CreateInternalFlights(DateTime relative)
         {
             List<Flight> flights = new List<Flight>();
-            string time = relative.ToString("MM/dd/yyyy HH:mm:ss");
+            string time = relative.ToString("dd/MM/yyyy HH:mm:ss");
             // run over FilghtPlans.
             foreach (FlightPlan fp in _context.flightPlan)
             {

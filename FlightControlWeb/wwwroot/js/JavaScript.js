@@ -417,12 +417,12 @@ function getFlightPlanEndLocationByItem(item) {
         for (let i = 0; i < segments.length; i++) {
             date.setSeconds(date.getSeconds() + segments[i]["timespan_seconds"]);
         }
-        var dateStr =
-            ("00" + (date.getMonth() + 1)).slice(-2) + "/" +
+        let dateString =
             ("00" + date.getDate()).slice(-2) + "/" +
+            ("00" + (date.getMonth() + 1)).slice(-2) + "/" +
             date.getFullYear() + " " +
             ("00" + date.getHours()).slice(-2) + ":" +
             ("00" + date.getMinutes()).slice(-2) + ":" +
             ("00" + date.getSeconds()).slice(-2);
-        finalDateTime.set(jdata.flight_id, dateStr);
+        finalDateTime.set(jdata.flight_id, dateString);
     }

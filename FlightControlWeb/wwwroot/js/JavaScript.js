@@ -77,7 +77,7 @@ function g(map, polyline) {
             }
 
         });
-    }, 1000);
+    }, 15000);
 }
 
 
@@ -159,29 +159,38 @@ function removeIrrelevant(id, index) {
 
 //create a new row at the initial flights
 function appendItem(item) {
-    let tableRef = document.getElementById("myFlightsTable").getElementsByTagName('tbody')[0];
+    let tableRef;
+    if (item.is_external === false) {
+        tableRef = document.getElementById("myFlightsTable").getElementsByTagName('tbody')[0];
+    }
+    else {
+        tableRef = document.getElementById("externalFlightsTable").getElementsByTagName('tbody')[0];
+    }
     let row = tableRef.insertRow();
     //onClick event
     row.addEventListener("click", function (e) {
         rowListener(item, row);
     });
-    row.setAttribute("id",item.flight_id);
+    row.setAttribute("id", item.flight_id);
     let cell1 = row.insertCell(0);
     let cell2 = row.insertCell(1);
     let cell3 = row.insertCell(2);
-    let cell4 = row.insertCell(3);
     cell1.innerHTML = item.flight_id;
     cell2.innerHTML = item.company_name;
     cell3.innerHTML = item.date_time;
-    let x = document.createElement("INPUT");
-    x.setAttribute("type", "image");
-    x.setAttribute("src", "pic/garbage.png");
-    x.setAttribute("style", "width: 20px;height: 20px");
-    x.addEventListener("click", function (e) {
-        garbageFunc(item);
-        e.stopPropagation();
-    });
-    cell4.appendChild(x);
+    if (item.is_external === false) {
+        let cell4 = row.insertCell(3);
+        let x = document.createElement("INPUT");
+        x.setAttribute("type", "image");
+        x.setAttribute("src", "pic/garbage.png");
+        x.setAttribute("style", "width: 20px;height: 20px");
+        x.addEventListener("click", function (e) {
+            garbageFunc(item);
+            e.stopPropagation();
+        });
+        cell4.appendChild(x);
+    }
+
     //<td><input type="button" value="Delete Row" onclick="SomeDeleteRowFunction()"></td>
 
 }
@@ -326,7 +335,7 @@ function getFlightPlanByItem(item) {
         success: function (jdata) {
             createPolyline(jdata, polyline);
         },
-        error: function() {
+        error: function () {
             showAlert("failed to get a flight plan from the server");
         }
     });
@@ -387,42 +396,42 @@ function getFlightPlanEndLocationByItem(item) {
         }
     });
 }
-    function getFlightPlanEndDateTimeByItem(item) {
-        //GET flightPlan/flight_ID
-        let url = "/api/FlightPlan/"
-        url = url.concat(item.flight_id);
-        $.ajax({
-            type: "GET",
-            url: url,
-            dataType: 'json',
-            success: function (jdata) {
-                getFinalDateTime(jdata);
-            },
-            error: function () {
-                alert("get error");
-            }
-        });
-    }
-
-    function getFinalLocation(jdata) {
-        let segments = jdata.segments;
-        let flight_id = jdata.flight_id;
-        finalLongitude.set(flight_id, segments[segments.length - 1]["longitude"]);
-        finalLatitude.set(flight_id, segments[segments.length - 1]["latitude"]);
-    }
-
-    function getFinalDateTime(jdata) {
-        let segments = jdata.segments;
-        let date = new Date(jdata.initial_location.date_time);
-        for (let i = 0; i < segments.length; i++) {
-            date.setSeconds(date.getSeconds() + segments[i]["timespan_seconds"]);
+function getFlightPlanEndDateTimeByItem(item) {
+    //GET flightPlan/flight_ID
+    let url = "/api/FlightPlan/"
+    url = url.concat(item.flight_id);
+    $.ajax({
+        type: "GET",
+        url: url,
+        dataType: 'json',
+        success: function (jdata) {
+            getFinalDateTime(jdata);
+        },
+        error: function () {
+            alert("get error");
         }
-        let dateString =
-            ("00" + date.getDate()).slice(-2) + "/" +
-            ("00" + (date.getMonth() + 1)).slice(-2) + "/" +
-            date.getFullYear() + " " +
-            ("00" + date.getHours()).slice(-2) + ":" +
-            ("00" + date.getMinutes()).slice(-2) + ":" +
-            ("00" + date.getSeconds()).slice(-2);
-        finalDateTime.set(jdata.flight_id, dateString);
+    });
+}
+
+function getFinalLocation(jdata) {
+    let segments = jdata.segments;
+    let flight_id = jdata.flight_id;
+    finalLongitude.set(flight_id, segments[segments.length - 1]["longitude"]);
+    finalLatitude.set(flight_id, segments[segments.length - 1]["latitude"]);
+}
+
+function getFinalDateTime(jdata) {
+    let segments = jdata.segments;
+    let date = new Date(jdata.initial_location.date_time);
+    for (let i = 0; i < segments.length; i++) {
+        date.setSeconds(date.getSeconds() + segments[i]["timespan_seconds"]);
     }
+    let dateString =
+        ("00" + date.getDate()).slice(-2) + "/" +
+        ("00" + (date.getMonth() + 1)).slice(-2) + "/" +
+        date.getFullYear() + " " +
+        ("00" + date.getHours()).slice(-2) + ":" +
+        ("00" + date.getMinutes()).slice(-2) + ":" +
+        ("00" + date.getSeconds()).slice(-2);
+    finalDateTime.set(jdata.flight_id, dateString);
+}

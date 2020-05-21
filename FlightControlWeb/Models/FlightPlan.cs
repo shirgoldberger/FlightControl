@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text.Json.Serialization;
@@ -9,9 +10,9 @@ namespace FlightControlWeb.Models
 {
     public class FlightPlan
     {
-
         [JsonPropertyName("flight_id")]
-        public string Id { get; set; }
+        [Key]
+        public string FlightPlan_id { get; set; }
 
 
         [JsonPropertyName("passengers")]

@@ -71,7 +71,7 @@ namespace FlightControlWeb.Controllers
             // run over FilghtPlans.
             foreach (FlightPlan fp in _context.flightPlan)
             {
-                string id = fp.FlightPlan_id;
+                string id = fp.Id;
                 fp.Initial_location = TakeInitialLocation(id).Result;
                 fp.Segments = TakeSegments(id).Result;
                 DateTime start = LocalLibrary.ConvertToDateTime(fp.Initial_location.date_time);
@@ -85,7 +85,7 @@ namespace FlightControlWeb.Controllers
                     flights.Add(f);
                 }
                 // Save other properties.
-                f.Flight_id = fp.FlightPlan_id;
+                f.Flight_id = fp.Id;
                 f.Passengers = fp.Passengers;
                 f.Company_name = fp.Company_name;
                 f.Date_time = time;
@@ -232,7 +232,7 @@ namespace FlightControlWeb.Controllers
 
         private bool FlightExists(string id)
         {
-            return _context.flightPlan.Any(e => e.FlightPlan_id.CompareTo(id) == 0);
+            return _context.flightPlan.Any(e => e.Id.CompareTo(id) == 0);
         }
     }
 }

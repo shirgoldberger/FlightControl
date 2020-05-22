@@ -30,7 +30,7 @@ namespace FlightControlWeb.Controllers
             List<FlightPlan> fp = await _context.flightPlan.ToListAsync();
             foreach (FlightPlan element in fp)
             {
-                string id = element.FlightPlan_id;
+                string id = element.Id;
                 element.Initial_location = loc.Where(a => a.Id.CompareTo(id) == 0).First();
                 element.Segments = seg.Where(a => a.Id.CompareTo(id) == 0).ToList();
             }
@@ -84,7 +84,7 @@ namespace FlightControlWeb.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutFlightPlan(string id, FlightPlan flightPlan)
         {
-            if (id.CompareTo(flightPlan.FlightPlan_id) != 0)
+            if (id.CompareTo(flightPlan.Id) != 0)
             {
                 return BadRequest();
             }
@@ -117,21 +117,21 @@ namespace FlightControlWeb.Controllers
         public async Task<ActionResult<FlightPlan>> PostFlightPlan(FlightPlan flightPlan)
         {
             // Set ID.
-            flightPlan.FlightPlan_id = IDGenerator();
+            flightPlan.Id = IDGenerator();
             _context.flightPlan.Add(flightPlan);
             // Create flight with the relevent flight id. *** the flight id is placed just when adding it to the DataBase.
             var loc = flightPlan.Initial_location;
-            loc.Id = flightPlan.FlightPlan_id;
+            loc.Id = flightPlan.Id;
             _context.firstLoc.Add(loc);
             var seg = flightPlan.Segments;
             foreach (Segment element in seg)
             {
-                element.Id = flightPlan.FlightPlan_id;
+                element.Id = flightPlan.Id;
                 _context.segments.Add(element);
             }
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetFlightPlan", new { id = flightPlan.FlightPlan_id }, flightPlan);
+            return CreatedAtAction("GetFlightPlan", new { id = flightPlan.Id }, flightPlan);
         }
 
         // DELETE: api/FlightPlan/5
@@ -161,7 +161,7 @@ namespace FlightControlWeb.Controllers
 
         private bool FlightPlanExists(string id)
         {
-            return _context.flightPlan.Any(e => e.FlightPlan_id.CompareTo(id) == 0);
+            return _context.flightPlan.Any(e => e.Id.CompareTo(id) == 0);
         }
         public string IDGenerator()
         {

@@ -98,13 +98,9 @@ function getUTC(d) {
 
 function handleFlights(jdata, markerIcon, polyline) {
     jdata.forEach(function (item, i) {
-        //update finalLongitude and finalLatitude values
-        if (!(finalLatitude.has(item.flight_id)) || !(finalLongitude.has(item.flight_id))) {
-            getFlightPlanEndLocationByItem(item);
-        }
-        //update FinalDateTime value
-        if (!(finalDateTime.has(item.flight_id))) {
-            getFlightPlanEndDateTimeByItem(item);
+        //update finalLongitude, finalLatitude and FinalDateTime  values
+        if (!(finalLatitude.has(item.flight_id)) || !(finalLongitude.has(item.flight_id)) || !(finalDateTime.has(item.flight_id))) {
+            getFlightPlanEndDateTimeAndFinalLocationByItem(item);
         }
         //current location of the flight
         let lat = parseFloat(item.latitude);
@@ -380,7 +376,7 @@ function createMap() {
     return map;
 }
 
-function getFlightPlanEndLocationByItem(item) {
+function getFlightPlanEndDateTimeAndFinalLocationByItem(item) {
     //GET flightPlan/flight_ID
     let url = "/api/FlightPlan/"
     url = url.concat(item.flight_id);
@@ -389,23 +385,8 @@ function getFlightPlanEndLocationByItem(item) {
         url: url,
         dataType: 'json',
         success: function (jdata) {
-            getFinalLocation(jdata);
-        },
-        error: function () {
-            alert("get error");
-        }
-    });
-}
-function getFlightPlanEndDateTimeByItem(item) {
-    //GET flightPlan/flight_ID
-    let url = "/api/FlightPlan/"
-    url = url.concat(item.flight_id);
-    $.ajax({
-        type: "GET",
-        url: url,
-        dataType: 'json',
-        success: function (jdata) {
-            getFinalDateTime(jdata);
+            getFinalDateTime(jdata, item.flight_id);
+            getFinalLocation(jdata, item.flight_id);
         },
         error: function () {
             alert("get error");
@@ -413,14 +394,13 @@ function getFlightPlanEndDateTimeByItem(item) {
     });
 }
 
-function getFinalLocation(jdata) {
+function getFinalLocation(jdata,id) {
     let segments = jdata.segments;
-    let flight_id = jdata.flight_id;
-    finalLongitude.set(flight_id, segments[segments.length - 1]["longitude"]);
-    finalLatitude.set(flight_id, segments[segments.length - 1]["latitude"]);
+    finalLongitude.set(id, segments[segments.length - 1]["longitude"]);
+    finalLatitude.set(id, segments[segments.length - 1]["latitude"]);
 }
 
-function getFinalDateTime(jdata) {
+function getFinalDateTime(jdata, id) {
     let segments = jdata.segments;
     let date = new Date(jdata.initial_location.date_time);
     for (let i = 0; i < segments.length; i++) {
@@ -433,5 +413,5 @@ function getFinalDateTime(jdata) {
         ("00" + date.getHours()).slice(-2) + ":" +
         ("00" + date.getMinutes()).slice(-2) + ":" +
         ("00" + date.getSeconds()).slice(-2);
-    finalDateTime.set(jdata.flight_id, dateString);
+    finalDateTime.set(id, dateString);
 }

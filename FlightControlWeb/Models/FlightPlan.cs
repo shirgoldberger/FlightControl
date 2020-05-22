@@ -10,9 +10,10 @@ namespace FlightControlWeb.Models
 {
     public class FlightPlan
     {
-        [JsonPropertyName("flight_id")]
         [Key]
-        public string FlightPlan_id { get; set; }
+
+        [JsonIgnore]
+        public string Id { get; set; }
 
 
         [JsonPropertyName("passengers")]

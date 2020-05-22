@@ -1,8 +1,6 @@
 //idan:
 
 
-
-
 let group = L.layerGroup();
 let polyline;
 let map = createMap();
@@ -43,7 +41,7 @@ $(document).ready(function () {
             }
         });
     });
-    g(map, polyline);
+    g();
     $("#success-alert").hide();
 });
 
@@ -55,7 +53,7 @@ function showAlert(message) {
 }
 
 
-function g(map, polyline) {
+function g() {
     //key = flight_id, value = marker on map
 
     setInterval(function () {
@@ -65,22 +63,17 @@ function g(map, polyline) {
         let url = "/api/Flights?relative_to=";
         url = url.concat(date);
         url = url.concat("&sync_all");
-        $.ajax({
-            type: "GET",
-            url: url,
-            dataType: 'json',
-            success: function (jdata) {
-                handleFlights(jdata, markerIcon, polyline);
-            },
-            error: function () {
-                showAlert("failed to get flights from the server");
-            }
-
-        });
-    }, 15000);
+        loop(url).catch(showAlert);
+    }, 1000);
 }
 
-
+async function loop(url) {
+    //GET flightPlan/flight_ID
+    let jdata = await fetch(url);
+    let flghts = await jdata.json();
+    handleFlights(flghts);
+    return flghts;
+}
 
 
 function getUTC(d) {
@@ -96,11 +89,11 @@ function getUTC(d) {
 }
 
 
-function handleFlights(jdata, markerIcon, polyline) {
+function handleFlights(jdata) {
     jdata.forEach(function (item, i) {
         //update finalLongitude, finalLatitude and FinalDateTime  values
         if (!(finalLatitude.has(item.flight_id)) || !(finalLongitude.has(item.flight_id)) || !(finalDateTime.has(item.flight_id))) {
-            getFlightPlanEndDateTimeAndFinalLocationByItem(item);
+            getFlightPlanEndDateTimeAndFinalLocationByItem(item).catch(showAlert);
         }
         //current location of the flight
         let lat = parseFloat(item.latitude);
@@ -208,9 +201,10 @@ function rowListener(item, row) {
     }
     //polyline
     //idannnn
-    getFlightPlanByItem(item);
+    getFlightPlanByItem(item).catch(showAlert); 
+    
+}  
 
-}
 
 
 function markRow(row) {
@@ -228,6 +222,20 @@ function markRow(row) {
     row.classList.add("bg-primary");
 }
 
+async function getFlightPlanEndDateTimeAndFinalLocationByItem(item) {
+    //GET flightPlan/flight_ID
+    let url = "/api/FlightPlan/"
+    url = url.concat(item.flight_id);
+    let jdata = await fetch(url);
+    let flightPlan = await jdata.json();
+    getFinalDateTime(flightPlan, item.flight_id);
+    getFinalLocation(flightPlan, item.flight_id);
+    return flightPlan;
+}
+
+
+
+
 
 function garbageFunc(item) {
     // event.target will be the input element.
@@ -239,14 +247,7 @@ function garbageFunc(item) {
     if (!item.is_external) {
         let url = "/api/Flights/"
         url = url.concat(item.flight_id);
-        $.ajax({
-            type: "DELETE",
-            url: url,
-            dataType: 'json',
-            error: function () {
-                showAlert("failed to delete the flight plan from the server");
-            }
-        });
+        deleteFlight(url).catch(showAlert);
     }
 
     //delete the marker from the map.
@@ -255,6 +256,17 @@ function garbageFunc(item) {
     //delete filght details if it was presed
     deleteFlightDetails(item.flight_id);
 }
+
+
+async function deleteFlight(url) {
+    const response = await fetch(url, {
+        method: 'DELETE',
+    });
+    return 1;
+}
+
+
+
 
 //get a flight and delete it from the markers(planes) list if its there.
 function deleteMarker(id) {
@@ -317,24 +329,19 @@ function onClick(item, polyline, e) {
     //mark current marker with marked-icon
     var layer = e.target;
     layer.setIcon(markedMarkerIcon);
-    getFlightPlanByItem(item);
+    getFlightPlanByItem(item).catch(showAlert); 
 }
 
-function getFlightPlanByItem(item) {
+
+
+async function getFlightPlanByItem(item) {
     //GET flightPlan/flight_ID
     let url = "/api/FlightPlan/"
     url = url.concat(item.flight_id);
-    $.ajax({
-        type: "GET",
-        url: url,
-        dataType: 'json',
-        success: function (jdata) {
-            createPolyline(jdata, polyline);
-        },
-        error: function () {
-            showAlert("failed to get a flight plan from the server");
-        }
-    });
+    let jdata = await fetch(url);
+    let flightPlan = await jdata.json();
+    createPolyline(flightPlan, polyline);
+    return flightPlan;
 }
 
 function updateDetails(item) {
@@ -352,7 +359,7 @@ function updateDetails(item) {
 
 
 
-function createPolyline(jdata, polyline) {
+function createPolyline(jdata) {
     let segments = jdata.segments;
     let longitude;
     let latitude;
@@ -376,23 +383,6 @@ function createMap() {
     return map;
 }
 
-function getFlightPlanEndDateTimeAndFinalLocationByItem(item) {
-    //GET flightPlan/flight_ID
-    let url = "/api/FlightPlan/"
-    url = url.concat(item.flight_id);
-    $.ajax({
-        type: "GET",
-        url: url,
-        dataType: 'json',
-        success: function (jdata) {
-            getFinalDateTime(jdata, item.flight_id);
-            getFinalLocation(jdata, item.flight_id);
-        },
-        error: function () {
-            alert("get error");
-        }
-    });
-}
 
 function getFinalLocation(jdata,id) {
     let segments = jdata.segments;

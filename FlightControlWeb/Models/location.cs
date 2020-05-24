@@ -18,6 +18,6 @@ namespace FlightControlWeb.Models
         public string Id { get; set; }
         public double Longitude { get; set; }
         public double Latitude { get; set; }
-        public string date_time { get; set; }
+        public string Date_time { get; set; }
     }
 }

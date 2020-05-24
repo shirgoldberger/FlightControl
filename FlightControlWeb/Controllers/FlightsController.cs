@@ -74,7 +74,7 @@ namespace FlightControlWeb.Controllers
                 string id = fp.Id;
                 fp.Initial_location = TakeInitialLocation(id).Result;
                 fp.Segments = TakeSegments(id).Result;
-                DateTime start = LocalLibrary.ConvertToDateTime(fp.Initial_location.date_time);
+                DateTime start = LocalLibrary.ConvertToDateTime(fp.Initial_location.Date_time);
                 if (DateTime.Compare(relative, start) < 0)
                 {
                     continue;

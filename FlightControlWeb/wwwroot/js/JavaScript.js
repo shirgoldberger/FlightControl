@@ -33,7 +33,7 @@ $(document).ready(function () {
     map.on('click', function () {
         group.clearLayers();
         deleteFlightDetails()
-
+        markRow(null);
         //switch all markers icons' to non-marked icon
         map.eachLayer(function (layer) {
             if (layer instanceof L.Marker) {
@@ -64,7 +64,7 @@ function g() {
         url = url.concat(date);
         url = url.concat("&sync_all");
         loop(url).catch(showAlert);
-    }, 1000);
+    }, 15000);
 }
 
 async function loop(url) {
@@ -201,9 +201,9 @@ function rowListener(item, row) {
     }
     //polyline
     //idannnn
-    getFlightPlanByItem(item).catch(showAlert); 
-    
-}  
+    getFlightPlanByItem(item).catch(showAlert);
+
+}
 
 
 
@@ -329,7 +329,7 @@ function onClick(item, polyline, e) {
     //mark current marker with marked-icon
     var layer = e.target;
     layer.setIcon(markedMarkerIcon);
-    getFlightPlanByItem(item).catch(showAlert); 
+    getFlightPlanByItem(item).catch(showAlert);
 }
 
 
@@ -384,7 +384,7 @@ function createMap() {
 }
 
 
-function getFinalLocation(jdata,id) {
+function getFinalLocation(jdata, id) {
     let segments = jdata.segments;
     finalLongitude.set(id, segments[segments.length - 1]["longitude"]);
     finalLatitude.set(id, segments[segments.length - 1]["latitude"]);

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -29,5 +30,10 @@ namespace FlightControlWeb.Models
 
         [NotMapped]
         public List<Segment> Segments { get; set; }
+
+        public static implicit operator FlightPlan(ActionResult<FlightPlan> v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

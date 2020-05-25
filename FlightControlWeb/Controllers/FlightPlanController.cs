@@ -21,21 +21,6 @@ namespace FlightControlWeb.Controllers
             _context = context;
         }
 
-        // GET: api/FlightPlan
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<FlightPlan>>> GetFlightPlan()
-        {
-            var loc = await _context.firstLoc.ToListAsync();
-            var seg = await _context.segments.ToListAsync();
-            List<FlightPlan> fp = await _context.flightPlan.ToListAsync();
-            foreach (FlightPlan element in fp)
-            {
-                string id = element.Id;
-                element.Initial_location = loc.Where(a => a.Id.CompareTo(id) == 0).First();
-                element.Segments = seg.Where(a => a.Id.CompareTo(id) == 0).ToList();
-            }
-            return fp;
-        }
 
         // GET: api/FlightPlan/5
         [HttpGet("{id}")]
@@ -152,9 +137,7 @@ namespace FlightControlWeb.Controllers
                 _context.segments.Remove(element);
             }
             _context.flightPlan.Remove(flightPlan);
-
             await _context.SaveChangesAsync();
-
             return flightPlan;
         }
 

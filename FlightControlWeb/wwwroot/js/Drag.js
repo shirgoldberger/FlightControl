@@ -13,14 +13,17 @@ function uploadOnDrop() {
 
 function submit() {
     let inputFile = document.getElementById("myFlightsInput").files[0];
-
     let reader = new FileReader();
     reader.readAsText(inputFile);
-
     let jdata;
     reader.onload = function () {
         jdata = reader.result.replace('/r', '');
-        postData(jdata);
+        if (fileIsJson(jdata)) {
+            postData(jdata);
+        }
+        else {
+            showAlert("This project supports only valid JSON files");
+        }
     }
 }
 function postData(jdata) {
@@ -28,4 +31,13 @@ function postData(jdata) {
     request.open("POST", "/api/FlightPlan", true);
     request.setRequestHeader("Content-Type", "application/json");
     request.send(jdata);
+}
+
+function fileIsJson(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
 }

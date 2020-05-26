@@ -42,61 +42,46 @@
             </div>
             <div class="mt-4 col-lg-9">
                 <!-- Button to Open the Modal -->
-                <button type="button" class="float-left btn btn-primary" data-toggle="modal" data-target="#setIPModal">
-                    Set IP & Port
-                </button>
-                <!-- Button to Open the Modal -->
                 <button type="button" class="float-left btn btn-primary ml-2" data-toggle="modal" data-target="#serversModal">
-                    Servers
+                    About
                 </button>
-                <!-- The Modal -->
-                <div class="modal fade" id="setIPModal">
-                    <div class="modal-dialog">
-                        <div class="modal-content bg-dark">
-
-                            <!-- Modal Header -->
-                            <div class="modal-header">
-                                <h4 class="modal-title">Set IP & Port</h4>
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            </div>
-
-                            <!-- Modal body -->
-                            <div class="modal-body">
-                                <form>
-                                    <div class="form-group">
-                                        <label>IP</label>
-                                        <textarea class="form-control" id="IPTextBox" rows="1"></textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Port</label>
-                                        <textarea class="form-control" id="PorTextBox" rows="1"></textarea>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Submit</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <div class="modal fade" id="serversModal">
-                    <div class="modal-dialog">
+                    <div class="modal-dialog modal-xl">
                         <div class="modal-content bg-dark">
                             <!-- Modal Header -->
                             <div class="modal-header">
-                                <h4 class="modal-title">Servers</h4>
+                                <h4 class="modal-title">About</h4>
                                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                             </div>
                             <!-- Modal body -->
                             <div class="modal-body">
-                                Idan Cohen <br>
-                                Gadidi <br>
-                                Eliad <br>
+                                Flight Control<br />
+                                Advanced Programming II<br />
+
+                                In this web project you can keep track of your flights.<br />
+
+                                Features:<br />
+
+                                Adding a flight<br />
+                                Just drag a JSON file to the flights table near the map. After you do that, an icon represeting this flight will appear on the map at the exact location of the plane.<br />
+                                - If the flight had ended or has not started yet, an icon will not appear on the map.<br />
+                                In addition, the flight will be added to the list of internal flights in the right of the map. The plane's icon will advance on the map according to the flight path until it reaches the destination and then disappears.<br />
+                                <br />
+                                Clicking on flight icon<br />
+                                When you click on some flight icon, the icon's color will change, the flight line on the flight list will be highlighted and you can see details about this flight below the map.<br />
+
+                                Adding a server<br />
+                                Using an HTTP post request (through postman for example) for adding another server that share his flight. You just need to know the URL of the server to do this. Flights from other servers will appear near the map under the title "External Flights" and icons of the server's flights will appear on the map.<br />
+
+                                Deleting flight<br />
+                                Near the line of the flight near the map, you can see 'X'. When you click on it, the flight will be removed from the flight list and the flight icon will disappear from the map.
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="alert alert-danger float-left ml-2" id="success-alert">
-                <strong id="message"></strong>
+                <div class="alert alert-danger float-left ml-5" id="success-alert">
+                    <strong id="message"></strong>
+                </div>
             </div>
         </div>
         <div class="row">

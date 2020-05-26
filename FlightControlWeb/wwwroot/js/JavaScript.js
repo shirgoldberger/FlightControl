@@ -64,7 +64,7 @@ function g() {
         url = url.concat(date);
         url = url.concat("&sync_all");
         loop(url).catch(showAlert);
-    }, 15000);
+    }, 1000);
 }
 
 async function loop(url) {
@@ -219,7 +219,9 @@ function markRow(row) {
         tds[i].classList.remove("bg-primary");
     }
     // mark current row
-    row.classList.add("bg-primary");
+    if (row != null) {
+        row.classList.add("bg-primary");
+    }
 }
 
 async function getFlightPlanEndDateTimeAndFinalLocationByItem(item) {
@@ -365,6 +367,7 @@ function createPolyline(jdata) {
     let latitude;
     let location
     let polylineArray = [];
+    polylineArray.push([jdata.initial_location.latitude, jdata.initial_location.longitude]);
     for (let i = 0; i < segments.length; i++) {
         longitude = segments[i]["longitude"];
         latitude = segments[i]["latitude"];

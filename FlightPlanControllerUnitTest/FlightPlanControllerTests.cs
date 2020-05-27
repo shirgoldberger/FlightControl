@@ -69,7 +69,7 @@ namespace FlightPlanControllerTest
             ActionResult<FlightPlan> fp2 = await _sut.GetFlightPlan(id);
             string result = fp2.Result.ToString();
             // Assert
-            Assert.IsTrue(result == "Microsoft.AspNetCore.Mvc.NotFoundObjectResult");
+            Assert.IsTrue(result.Contains("NotFound"));
         }
     }
 }

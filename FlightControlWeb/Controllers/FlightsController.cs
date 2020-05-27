@@ -144,28 +144,29 @@ namespace FlightControlWeb.Controllers
             bool isRelevant = false;
             double startLat = fp.Initial_location.Latitude;
             double startLong = fp.Initial_location.Longitude;
+            Segment[] sortArray = fp.Segments.OrderBy(o => o.key).ToArray();
+            double totalSeconds = (relative - start).TotalSeconds;
+            double timePassed = 0;
+            int segNum;
             // Run over the segments.
-            foreach (Segment s in fp.Segments)
+            for(segNum = 0; segNum < sortArray.Length; segNum++)
             {
-                DateTime saveStart = start;
-                DateTime test = start.AddSeconds(s.timespan_seconds);
+                double time = totalSeconds - timePassed;
                 // The plan is in this segment at the time is given.
-                if (DateTime.Compare(relative, start) >= 0 &&
-                    DateTime.Compare(relative, test) <= 0)
+                if (time < sortArray[segNum].timespan_seconds)
                 {
-                    TimeSpan difference = relative - saveStart;
-                    double k = difference.Seconds;
-                    double l = s.timespan_seconds - k;
-                    f.Latitude = (startLat * l + s.Latitude * k) / (l + k);
-                    f.Longitude = (startLong * l + s.Longitude * k) / (l + k);
+                    double l = time / sortArray[segNum].timespan_seconds;
+                    f.Latitude = startLat + l * (sortArray[segNum].Latitude - startLat);
+                    f.Longitude = startLong + l * (sortArray[segNum].Longitude - startLong);
                     isRelevant = true;
                     break;
                 }
                 else
                 {
                     // Save the start location of the segment.
-                    startLat = s.Latitude;
-                    startLong = s.Longitude;
+                    startLat = sortArray[segNum].Latitude;
+                    startLong = sortArray[segNum].Longitude;
+                    timePassed += sortArray[segNum].timespan_seconds;
                 }
             }
             return isRelevant;

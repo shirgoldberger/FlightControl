@@ -8820,19 +8820,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Shir\\.nuget\\packages\\": {}
+    "C:\\Users\\konopatz\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Shir\\Source\\Repos\\FlightControl\\FlightControlWeb\\FlightControlWeb.csproj",
+      "projectUniqueName": "C:\\Users\\konopatz\\Source\\Repos\\FlightControl\\FlightControlWeb\\FlightControlWeb.csproj",
       "projectName": "FlightControlWeb",
-      "projectPath": "C:\\Users\\Shir\\Source\\Repos\\FlightControl\\FlightControlWeb\\FlightControlWeb.csproj",
-      "packagesPath": "C:\\Users\\Shir\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Shir\\Source\\Repos\\FlightControl\\FlightControlWeb\\obj\\",
+      "projectPath": "C:\\Users\\konopatz\\Source\\Repos\\FlightControl\\FlightControlWeb\\FlightControlWeb.csproj",
+      "packagesPath": "C:\\Users\\konopatz\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\konopatz\\Source\\Repos\\FlightControl\\FlightControlWeb\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Shir\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\konopatz\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [

@@ -105,7 +105,7 @@ namespace FlightControlWeb.Controllers
                     externalFlights = LocalLibrary.GetFlightFromServer<List<Flight>>(get);
 
                 }
-                catch (System.Net.WebException)
+                catch (Exception)
                 {
                     continue;
                 }

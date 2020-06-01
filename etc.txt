@@ -1,0 +1,27 @@
+314880873, Nili Alfia
+319203162, Eliad Sellem
+205894991, Idan Yarchi
+209205798, Shir Goldberger
+
+About the unitest of the project:
+Our main target was to check the FlightPlanController class.
+The TestClass FlightPlanControllerTests has a constructor and two TestMethods, and checks the following things:
+1.  Constructor: 
+    We added two data members: The first one is an instance of FlightPlanController, called _sut (system under test),
+    which mocks the behavior of the FlightPlanController in our project.
+    The second one is _FlightDBContextMock, a context to the FlightPlanController instance (mocks FlightDbContext). The constructor creates
+    the context and adds it to the FlightPlanController instance.
+2.  TestMethod GetFlightPlan_ShouldReturnFlightPlan_WhenFlightPlanExists:
+    In this method we tested the following thigs:
+    We created a new FlightPlan instance with fixed values (represents an instance of a FlightPlan). In the first step we added this FlightPlan to the DB. 
+    Than we tested the GetFlightPlan method of FlightPlanController.This method has an ID of a FlightPlan as an argument, and tries to find the FlightPlan
+    with that ID. We passed the same fixed ID that we gave to the instance of the FlightPlan, to check if the FlightPlan object that the method finds
+    has the same properties of the one that we fixed befor (the one we added to the DB).   
+    Here we used Assert method to test that the propreties are the same, means that getFlightPlan method found the FlightPlan correctly in the DB. This also
+    means that the FlightPlan that we fixed it's properties added correctly to the DB, an instance of FlightDbContext.
+    Than we checked that the method returns a whole FlightPlan object correctly if this Flight plan added to the DB (Assert.isNotNull).
+3.  TestMethod GetFlightPlan_ShouldReturnNotFound_WhenFlightPlanNotExist:
+    In this method we checked that when we pass an ID that there is no FlightPlan with that one (not in DB and not in a relevant servers), 
+    we get a NotFound state correctly. This is done by checking the string of the Result of an ActionResult<FlightPlan> object. In this method we
+    passed two ID's that are not exist, and we checked with Assert method that the result object of the return value of getFlightPlan contains "NotFound"
+    state.

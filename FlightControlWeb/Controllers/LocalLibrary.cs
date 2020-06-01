@@ -57,7 +57,7 @@ namespace FlightControlWeb.Controllers
             return externalFlights;
         }
 
-        public static char getLetter()
+        public static char GetLetter()
         {
             // create rendom letter.
             var rand = new Random();
@@ -66,7 +66,7 @@ namespace FlightControlWeb.Controllers
             return letter;
         }
 
-        public static int getNumber()
+        public static int GetNumber()
         {
             // create random number.
             var rand = new Random();

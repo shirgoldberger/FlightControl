@@ -17,43 +17,43 @@ namespace FlightPlanControllerTest
     public class FlightPlanControllerTests
     {
         // _sut == system under test
-        private readonly FlightPlanController _sut;
-        private readonly FlightDbContext _FlightDBContextMock;
+        private readonly FlightPlanController sut;
+        private readonly FlightDbContext flightDBContextMock;
         public FlightPlanControllerTests()
         {
             string[] args = { };
             var h = Program.CreateHostBuilder(args);
             var d = new DbContextOptionsBuilder<FlightDbContext>();
             d.UseInMemoryDatabase("DBName");
-            _FlightDBContextMock = new FlightDbContext(d.Options);
-            _sut = new FlightPlanController(_FlightDBContextMock);
+            flightDBContextMock = new FlightDbContext(d.Options);
+            sut = new FlightPlanController(flightDBContextMock);
         }
 
         [TestMethod]
         public async Task GetFlightPlan_ShouldReturnFlightPlan_WhenFlightPlanExists()
         {
             Location location = new Location();
-            location.Id = "DF562344";
+            location.ID = "DF562344";
             // Arrange
             var flightPlanDto = new FlightPlan
             {
-                Id = "NL145289",
+                ID = "NL145289",
                 Passengers = 257,
-                Company_name = "el al",
-                Initial_location = location
+                CompanyName = "el al",
+                InitialLocation = location
             };
-            _FlightDBContextMock.flightPlan.Add(flightPlanDto);
-            _FlightDBContextMock.SaveChanges();
+            flightDBContextMock.FlightPlan.Add(flightPlanDto);
+            flightDBContextMock.SaveChanges();
             // Act
-            var flightPlan = await _FlightDBContextMock.flightPlan.FindAsync("NL145289");
-            Task<ActionResult<FlightPlan>> fp1 = _sut.GetFlightPlan("NL145289");
+            var flightPlan = await flightDBContextMock.FlightPlan.FindAsync("NL145289");
+            Task<ActionResult<FlightPlan>> fp1 = sut.GetFlightPlan("NL145289");
             // Assert
             /** check some attrubutes of the FlightPlan feilds in DB
              * */
-            Assert.IsTrue("NL145289" == flightPlan.Id);
+            Assert.IsTrue("NL145289" == flightPlan.ID);
             Assert.IsTrue(257 == flightPlan.Passengers);
-            Assert.IsTrue("el al" == flightPlan.Company_name);
-            Assert.IsTrue("DF562344" == flightPlan.Initial_location.Id);
+            Assert.IsTrue("el al" == flightPlan.CompanyName);
+            Assert.IsTrue("DF562344" == flightPlan.InitialLocation.ID);
             /** check GetFlightPlan method
              */
             // true because we added a flight plan with that id to the DB
@@ -66,7 +66,7 @@ namespace FlightPlanControllerTest
         public async Task GetFlightPlan_ShouldReturnNotFound_WhenFlightPlanNotExist(string id)
         {
             // Act
-            ActionResult<FlightPlan> fp2 = await _sut.GetFlightPlan(id);
+            ActionResult<FlightPlan> fp2 = await sut.GetFlightPlan(id);
             string result = fp2.Result.ToString();
             // Assert
             Assert.IsTrue(result.Contains("NotFound"));

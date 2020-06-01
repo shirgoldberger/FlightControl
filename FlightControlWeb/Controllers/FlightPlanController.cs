@@ -14,11 +14,11 @@ namespace FlightControlWeb.Controllers
     [ApiController]
     public class FlightPlanController : ControllerBase
     {
-        private readonly FlightDbContext _context;
+        private readonly FlightDbContext context;
 
-        public FlightPlanController(FlightDbContext context)
+        public FlightPlanController(FlightDbContext c)
         {
-            _context = context;
+            context = c;
         }
 
 
@@ -26,19 +26,19 @@ namespace FlightControlWeb.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<FlightPlan>> GetFlightPlan(string id)
         {
-            var loc = await _context.firstLoc.ToListAsync();
-            var seg = await _context.segments.ToListAsync();
-            var flightPlan = await _context.flightPlan.FindAsync(id);
+            var loc = await context.FirstLoc.ToListAsync();
+            var seg = await context.Segments.ToListAsync();
+            var flightPlan = await context.FlightPlan.FindAsync(id);
             if (flightPlan != null)
             {
-                flightPlan.Initial_location = loc.Where(a => a.Id.CompareTo(id) == 0).First();
-                flightPlan.Segments = seg.Where(a => a.Id.CompareTo(id) == 0).ToList();
+                flightPlan.InitialLocation = loc.Where(a => a.ID.CompareTo(id) == 0).First();
+                flightPlan.Segments = seg.Where(a => a.ID.CompareTo(id) == 0).ToList();
                 return flightPlan;
             }
             // Ask only the relevant server.
             try
             {
-                var s = FlightDbContext.serverId[id];
+                var s = FlightDbContext.ServerID[id];
                 if (s == null)
                 {
                     return NotFound();
@@ -68,16 +68,16 @@ namespace FlightControlWeb.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutFlightPlan(string id, FlightPlan flightPlan)
         {
-            if (id.CompareTo(flightPlan.Id) != 0)
+            if (id.CompareTo(flightPlan.ID) != 0)
             {
                 return BadRequest();
             }
 
-            _context.Entry(flightPlan).State = EntityState.Modified;
+            context.Entry(flightPlan).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -101,76 +101,76 @@ namespace FlightControlWeb.Controllers
         public async Task<ActionResult<FlightPlan>> PostFlightPlan(FlightPlan flightPlan)
         {
             // Set ID.
-            flightPlan.Id = IDGenerator();
-            _context.flightPlan.Add(flightPlan);
+            flightPlan.ID = IDGenerator();
+            context.FlightPlan.Add(flightPlan);
             // Create flight with the relevent flight id. *** the flight id is placed just when adding it to the DataBase.
-            var loc = flightPlan.Initial_location;
-            loc.Id = flightPlan.Id;
-            _context.firstLoc.Add(loc);
+            var loc = flightPlan.InitialLocation;
+            loc.ID = flightPlan.ID;
+            context.FirstLoc.Add(loc);
             var seg = flightPlan.Segments;
             foreach (Segment element in seg)
             {
-                element.Id = flightPlan.Id;
-                _context.segments.Add(element);
+                element.ID = flightPlan.ID;
+                context.Segments.Add(element);
             }
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
 
-            return CreatedAtAction("GetFlightPlan", new { id = flightPlan.Id }, flightPlan);
+            return CreatedAtAction("GetFlightPlan", new { id = flightPlan.ID }, flightPlan);
         }
 
         // DELETE: api/FlightPlan/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<FlightPlan>> DeleteFlightPlan(string id)
         {
-            var loc = await _context.firstLoc.ToListAsync();
-            var seg = await _context.segments.ToListAsync();
-            var flightPlan = await _context.flightPlan.FindAsync(id);
+            var loc = await context.FirstLoc.ToListAsync();
+            var seg = await context.Segments.ToListAsync();
+            var flightPlan = await context.FlightPlan.FindAsync(id);
             if (flightPlan == null)
             {
                 return NotFound();
             }
-            var first_loc = loc.Where(a => a.Id.CompareTo(id) == 0).First();
-            var segments = seg.Where(a => a.Id.CompareTo(id) == 0).ToList();
-            _context.firstLoc.Remove(first_loc);
+            var first_loc = loc.Where(a => a.ID.CompareTo(id) == 0).First();
+            var segments = seg.Where(a => a.ID.CompareTo(id) == 0).ToList();
+            context.FirstLoc.Remove(first_loc);
             foreach (Segment element in segments)
             {
-                _context.segments.Remove(element);
+                context.Segments.Remove(element);
             }
-            _context.flightPlan.Remove(flightPlan);
-            await _context.SaveChangesAsync();
+            context.FlightPlan.Remove(flightPlan);
+            await context.SaveChangesAsync();
             return flightPlan;
         }
 
         private bool FlightPlanExists(string id)
         {
-            return _context.flightPlan.Any(e => e.Id.CompareTo(id) == 0);
+            return context.FlightPlan.Any(e => e.ID.CompareTo(id) == 0);
         }
         public string IDGenerator()
         {
             // Create random ID that look like- 'AA-00000000'.
             string id = "";
             // Generates a key.
-            char c1 = LocalLibrary.getLetter();
+            char c1 = LocalLibrary.GetLetter();
             id = id + c1;
-            char c2 = LocalLibrary.getLetter();
+            char c2 = LocalLibrary.GetLetter();
             id = id + c2;
             id = id + "-";
             // Generates the numbers.
-            int num1 = LocalLibrary.getNumber();
+            int num1 = LocalLibrary.GetNumber();
             id = id + num1;
-            int num2 = LocalLibrary.getNumber();
+            int num2 = LocalLibrary.GetNumber();
             id = id + num2;
-            int num3 = LocalLibrary.getNumber();
+            int num3 = LocalLibrary.GetNumber();
             id = id + num3;
-            int num4 = LocalLibrary.getNumber();
+            int num4 = LocalLibrary.GetNumber();
             id = id + num4;
-            int num5 = LocalLibrary.getNumber();
+            int num5 = LocalLibrary.GetNumber();
             id = id + num5;
-            int num6 = LocalLibrary.getNumber();
+            int num6 = LocalLibrary.GetNumber();
             id = id + num6;
-            int num7 = LocalLibrary.getNumber();
+            int num7 = LocalLibrary.GetNumber();
             id = id + num7;
-            int num8 = LocalLibrary.getNumber();
+            int num8 = LocalLibrary.GetNumber();
             id = id + num8;
             return id;
         }

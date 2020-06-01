@@ -14,18 +14,18 @@ namespace FlightControlWeb.Models
         [Key]
 
         [JsonIgnore]
-        public string Id { get; set; }
+        public string ID { get; set; }
 
 
         [JsonPropertyName("passengers")]
         public int Passengers { get; set; }
         [JsonPropertyName("company_name")]
 
-        public string Company_name { get; set; }
+        public string CompanyName { get; set; }
         [NotMapped]
         [JsonPropertyName("initial_location")]
 
-        public Location Initial_location { get; set; }
+        public Location InitialLocation { get; set; }
         [JsonPropertyName("segments")]
 
         [NotMapped]

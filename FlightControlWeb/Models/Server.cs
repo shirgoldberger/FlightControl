@@ -12,7 +12,7 @@ namespace FlightControlWeb.Models
         [Key]
         [JsonPropertyName("ServerId")]
 
-        public string ServerId { get; set; }
+        public string ServerID { get; set; }
         [JsonPropertyName("ServerURL")]
 
         public string ServerURL { get; set; }

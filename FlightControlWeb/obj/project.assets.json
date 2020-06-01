@@ -8820,27 +8820,20 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\eliad\\.nuget\\packages\\": {},
-    "C:\\Microsoft\\Xamarin\\NuGet\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Users\\konopatz\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\eliad\\Source\\Repos\\FlightControl\\FlightControlWeb\\FlightControlWeb.csproj",
+      "projectUniqueName": "C:\\Users\\konopatz\\Source\\Repos\\FlightControl\\FlightControlWeb\\FlightControlWeb.csproj",
       "projectName": "FlightControlWeb",
-      "projectPath": "C:\\Users\\eliad\\Source\\Repos\\FlightControl\\FlightControlWeb\\FlightControlWeb.csproj",
-      "packagesPath": "C:\\Users\\eliad\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\eliad\\Source\\Repos\\FlightControl\\FlightControlWeb\\obj\\",
+      "projectPath": "C:\\Users\\konopatz\\Source\\Repos\\FlightControl\\FlightControlWeb\\FlightControlWeb.csproj",
+      "packagesPath": "C:\\Users\\konopatz\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\konopatz\\Source\\Repos\\FlightControl\\FlightControlWeb\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Microsoft\\Xamarin\\NuGet\\",
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-      ],
       "configFilePaths": [
-        "C:\\Users\\eliad\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        "C:\\Users\\konopatz\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp3.1"
@@ -8916,7 +8909,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.200\\RuntimeIdentifierGraph.json"
       }
     }
   }

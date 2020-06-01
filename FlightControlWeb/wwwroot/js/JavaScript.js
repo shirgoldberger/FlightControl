@@ -1,4 +1,4 @@
-//idan:
+
 
 
 let group = L.layerGroup();

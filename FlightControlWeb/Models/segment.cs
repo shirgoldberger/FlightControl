@@ -12,13 +12,13 @@ namespace FlightControlWeb.Models
         [Key]
         [JsonIgnore]
 
-        public int key { get; set; }
+        public int Key { get; set; }
         [JsonIgnore]
 
-        public string Id { get; set; }
+        public string ID { get; set; }
 
         public double Longitude { get; set; }
         public double Latitude { get; set; }
-        public int timespan_seconds { get; set; }
+        public int TimespanSeconds { get; set; }
     }
 }

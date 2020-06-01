@@ -13,11 +13,11 @@ namespace FlightControlWeb.Controllers
     [ApiController]
     public class FlightsController : ControllerBase
     {
-        private readonly FlightDbContext _context;
+        private readonly FlightDbContext context;
 
-        public FlightsController(FlightDbContext context)
+        public FlightsController(FlightDbContext c)
         {
-            _context = context;
+            context = c;
         }
 
         // GET: api/Flights
@@ -30,8 +30,8 @@ namespace FlightControlWeb.Controllers
             }
             // True if the request contain 'sync_all'.
             Boolean sync = Request.Query.ContainsKey("sync_all");
-            FlightDbContext.serverId.Clear();
-            _context.SaveChanges();
+            FlightDbContext.ServerID.Clear();
+            context.SaveChanges();
             List<Flight> flights = new List<Flight>();
             DateTime relative = new DateTime();
             try
@@ -69,12 +69,12 @@ namespace FlightControlWeb.Controllers
             List<Flight> flights = new List<Flight>();
             string time = relative.ToString("dd/MM/yyyy HH:mm:ss");
             // run over FilghtPlans.
-            foreach (FlightPlan fp in _context.flightPlan)
+            foreach (FlightPlan fp in context.FlightPlan)
             {
-                string id = fp.Id;
-                fp.Initial_location = TakeInitialLocation(id).Result;
+                string id = fp.ID;
+                fp.InitialLocation = TakeInitialLocation(id).Result;
                 fp.Segments = TakeSegments(id).Result;
-                DateTime start = LocalLibrary.ConvertToDateTime(fp.Initial_location.Date_time);
+                DateTime start = LocalLibrary.ConvertToDateTime(fp.InitialLocation.DateTime);
                 if (DateTime.Compare(relative, start) < 0)
                 {
                     continue;
@@ -85,18 +85,18 @@ namespace FlightControlWeb.Controllers
                     flights.Add(f);
                 }
                 // Save other properties.
-                f.Flight_id = fp.Id;
+                f.FlightID = fp.ID;
                 f.Passengers = fp.Passengers;
-                f.Company_name = fp.Company_name;
-                f.Date_time = time;
-                f.Is_external = false;
+                f.CompanyName = fp.CompanyName;
+                f.DateTime = time;
+                f.IsExternal = false;
             }
             return flights;
         }
         private List<Flight> CreateExternalFlights(string relative_to)
         {
             List<Flight> externalFlights = new List<Flight>();
-            foreach (Server s in _context.Server)
+            foreach (Server s in context.Server)
             {
                 string get = s.ServerURL + "api/Flights?relative_to=" + relative_to;
 
@@ -111,40 +111,40 @@ namespace FlightControlWeb.Controllers
                 }
                 foreach (Flight f in externalFlights)
                 {
-                    f.Is_external = true;
+                    f.IsExternal = true;
                     // Save the server that the current flight belongs to him.
-                    FlightDbContext.serverId[f.Flight_id] = s;
+                    FlightDbContext.ServerID[f.FlightID] = s;
                 }
             }
-            _context.SaveChanges();
+            context.SaveChanges();
             return externalFlights;
         }
         private async Task<Location> TakeInitialLocation(string id)
         {
             // Create location according to the given id.
-            var loc = await _context.firstLoc.ToListAsync();
+            var loc = await context.FirstLoc.ToListAsync();
             Task<Location> l = Task<Location>.Factory.StartNew(() =>
             {
-                return loc.Where(a => a.Id.CompareTo(id) == 0).First();
+                return loc.Where(a => a.ID.CompareTo(id) == 0).First();
             });
             return await l;
         }
         private async Task<List<Segment>> TakeSegments(string id)
         {
             // Create segments according to the given id.
-            var seg = await _context.segments.ToListAsync();
+            var seg = await context.Segments.ToListAsync();
             Task<List<Segment>> s = Task<List<Segment>>.Factory.StartNew(() =>
             {
-                return seg.Where(a => a.Id.CompareTo(id) == 0).ToList();
+                return seg.Where(a => a.ID.CompareTo(id) == 0).ToList();
             });
             return await s;
         }
         private bool CheckSegments(FlightPlan fp, Flight f, DateTime start, DateTime relative)
         {
             bool isRelevant = false;
-            double startLat = fp.Initial_location.Latitude;
-            double startLong = fp.Initial_location.Longitude;
-            Segment[] sortArray = fp.Segments.OrderBy(o => o.key).ToArray();
+            double startLat = fp.InitialLocation.Latitude;
+            double startLong = fp.InitialLocation.Longitude;
+            Segment[] sortArray = fp.Segments.OrderBy(o => o.Key).ToArray();
             double totalSeconds = (relative - start).TotalSeconds;
             double timePassed = 0;
             int segNum;
@@ -153,9 +153,9 @@ namespace FlightControlWeb.Controllers
             {
                 double time = totalSeconds - timePassed;
                 // The plan is in this segment at the time is given.
-                if (time < sortArray[segNum].timespan_seconds)
+                if (time < sortArray[segNum].TimespanSeconds)
                 {
-                    double l = time / sortArray[segNum].timespan_seconds;
+                    double l = time / sortArray[segNum].TimespanSeconds;
                     f.Latitude = startLat + l * (sortArray[segNum].Latitude - startLat);
                     f.Longitude = startLong + l * (sortArray[segNum].Longitude - startLong);
                     isRelevant = true;
@@ -166,7 +166,7 @@ namespace FlightControlWeb.Controllers
                     // Save the start location of the segment.
                     startLat = sortArray[segNum].Latitude;
                     startLong = sortArray[segNum].Longitude;
-                    timePassed += sortArray[segNum].timespan_seconds;
+                    timePassed += sortArray[segNum].TimespanSeconds;
                 }
             }
             return isRelevant;
@@ -179,16 +179,16 @@ namespace FlightControlWeb.Controllers
         public async Task<IActionResult> PutFlight(string id, Flight flight)
         {
 
-            if (id.CompareTo(flight.Flight_id) != 0)
+            if (id.CompareTo(flight.FlightID) != 0)
             {
                 return BadRequest();
             }
 
-            _context.Entry(flight).State = EntityState.Modified;
+            context.Entry(flight).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -210,30 +210,30 @@ namespace FlightControlWeb.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<FlightPlan>> DeleteFlight(string id)
         {
-            var loc = await _context.firstLoc.ToListAsync();
-            var seg = await _context.segments.ToListAsync();
-            var flightPlan = await _context.flightPlan.FindAsync(id);
+            var loc = await context.FirstLoc.ToListAsync();
+            var seg = await context.Segments.ToListAsync();
+            var flightPlan = await context.FlightPlan.FindAsync(id);
             if (flightPlan == null)
             {
                 return NotFound();
             }
-            var first_loc = loc.Where(a => a.Id.CompareTo(id) == 0).First();
-            var segments = seg.Where(a => a.Id.CompareTo(id) == 0).ToList();
-            _context.firstLoc.Remove(first_loc);
+            var first_loc = loc.Where(a => a.ID.CompareTo(id) == 0).First();
+            var segments = seg.Where(a => a.ID.CompareTo(id) == 0).ToList();
+            context.FirstLoc.Remove(first_loc);
             foreach (Segment element in segments)
             {
-                _context.segments.Remove(element);
+                context.Segments.Remove(element);
             }
-            _context.flightPlan.Remove(flightPlan);
+            context.FlightPlan.Remove(flightPlan);
 
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
 
             return flightPlan;
         }
 
         private bool FlightExists(string id)
         {
-            return _context.flightPlan.Any(e => e.Id.CompareTo(id) == 0);
+            return context.FlightPlan.Any(e => e.ID.CompareTo(id) == 0);
         }
     }
 }

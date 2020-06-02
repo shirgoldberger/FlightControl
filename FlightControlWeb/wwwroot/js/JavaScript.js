@@ -1,6 +1,4 @@
-
-
-
+// eslint-disable-next-line no-undef
 let group = L.layerGroup();
 let polyline;
 let map = createMap();
@@ -12,6 +10,7 @@ let finalLatitude = new Map();
 let finalDateTime = new Map();
 
 
+// eslint-disable-next-line no-undef
 let markedMarkerIcon = L.icon({
     iconUrl: '/pic/marked-plain.png',
     iconSize: [50, 47], // size of the icon
@@ -20,6 +19,7 @@ let markedMarkerIcon = L.icon({
 });
 
 
+// eslint-disable-next-line no-undef
 let markerIcon = L.icon({
     iconUrl: '/pic/plain.png',
     iconSize: [50, 47], // size of the icon
@@ -28,26 +28,31 @@ let markerIcon = L.icon({
 });
 
 
+// eslint-disable-next-line no-undef
 $(document).ready(function () {
     group.addTo(map);
     map.on('click', function () {
         group.clearLayers();
-        deleteFlightDetails()
+        deleteFlightDetails();
         markRow(null);
         //switch all markers icons' to non-marked icon
         map.eachLayer(function (layer) {
+            // eslint-disable-next-line no-undef
             if (layer instanceof L.Marker) {
                 layer.setIcon(markerIcon);
             }
         });
     });
     g();
+    // eslint-disable-next-line no-undef
     $("#success-alert").hide();
 });
 
 function showAlert(message) {
     document.getElementById("message").innerHTML = message;
+    // eslint-disable-next-line no-undef
     $("#success-alert").fadeTo(10000, 500).slideUp(500, function () {
+        // eslint-disable-next-line no-undef
         $("#success-alert").slideUp(500);
     });
 }
@@ -59,12 +64,11 @@ function g() {
     setInterval(function () {
         let d_ = new Date();
         let date = getUTC(d_);
-        console.log(date);
         let url = "/api/Flights?relative_to=";
         url = url.concat(date);
         url = url.concat("&sync_all");
         loop(url).catch(showAlert);
-    }, 20000);
+    }, 1000);
 }
 
 async function loop(url) {
@@ -90,7 +94,7 @@ function getUTC(d) {
 
 
 function handleFlights(jdata) {
-    jdata.forEach(function (item, i) {
+    jdata.forEach(function (item) {
         //update finalLongitude, finalLatitude and FinalDateTime  values
         if (!(finalLatitude.has(item.flight_id)) || !(finalLongitude.has(item.flight_id)) || !(finalDateTime.has(item.flight_id))) {
             getFlightPlanEndDateTimeAndFinalLocationByItem(item).catch(showAlert);
@@ -108,6 +112,7 @@ function handleFlights(jdata) {
             //new flight
         } else {
             //create a new marker on map.
+            // eslint-disable-next-line no-undef
             let marker = L.marker([lat, long], { icon: markerIcon }).addTo(map)
                 .openPopup().on('click', function (e) {
                     onClick(item, polyline, e);
@@ -122,13 +127,13 @@ function handleFlights(jdata) {
     oldFlight_Id.forEach(removeIrrelevant);
     //update lists
     oldFlight_Id = [];
-    oldFlight_Id = newFlight_Id.slice();;
+    oldFlight_Id = newFlight_Id.slice();
     newFlight_Id = [];
 
 
 }
 
-function removeIrrelevant(id, index) {
+function removeIrrelevant(id) {
     if (!newFlight_Id.includes(id)) {
         //remove flight from view
         let tr = document.getElementById(id);
@@ -157,7 +162,7 @@ function appendItem(item) {
     }
     let row = tableRef.insertRow();
     //onClick event
-    row.addEventListener("click", function (e) {
+    row.addEventListener("click", function () {
         rowListener(item, row);
     });
     row.setAttribute("id", item.flight_id);
@@ -179,9 +184,6 @@ function appendItem(item) {
         });
         cell4.appendChild(x);
     }
-
-    //<td><input type="button" value="Delete Row" onclick="SomeDeleteRowFunction()"></td>
-
 }
 
 
@@ -208,12 +210,12 @@ function rowListener(item, row) {
 
 
 function markRow(row) {
-    var tds = document.querySelectorAll('#myFlightsTable tbody tr'), i;
+    let tds = document.querySelectorAll('#myFlightsTable tbody tr'), i;
     //delete mark from other rows in myFlightsTable
     for (i = 0; i < tds.length; ++i) {
         tds[i].classList.remove("bg-primary");
     }
-    var tds = document.querySelectorAll('#externalFlightsTable tbody tr'), i;
+    tds = document.querySelectorAll('#externalFlightsTable tbody tr'), i;
     //delete mark from other rows in externalFlightsTable
     for (i = 0; i < tds.length; ++i) {
         tds[i].classList.remove("bg-primary");
@@ -261,7 +263,7 @@ function garbageFunc(item) {
 
 
 async function deleteFlight(url) {
-    const response = await fetch(url, {
+    await fetch(url, {
         method: 'DELETE',
     });
     return 1;
@@ -324,6 +326,7 @@ function onClick(item, polyline, e) {
 
     //switch all markers icons' to non-marked icon
     map.eachLayer(function (layer) {
+        // eslint-disable-next-line no-undef
         if (layer instanceof L.Marker) {
             layer.setIcon(markerIcon);
         }
@@ -375,11 +378,14 @@ function createPolyline(jdata) {
         polylineArray.push(location);
     }
     group.clearLayers();
+    // eslint-disable-next-line no-undef
     polyline = L.polyline(polylineArray, { color: 'red' }).addTo(group);
 }
 
 function createMap() {
+    // eslint-disable-next-line no-undef
     let map = L.map('map').setView([51.505, -0.09], 3);
+    // eslint-disable-next-line no-undef
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);

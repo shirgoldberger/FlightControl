@@ -16,9 +16,14 @@ namespace FlightControlWeb.Models
         [JsonIgnore]
 
         public string ID { get; set; }
+        [JsonPropertyName("longitude")]
 
         public double Longitude { get; set; }
+        [JsonPropertyName("latitude")]
+
         public double Latitude { get; set; }
+        [JsonPropertyName("timespan_seconds")]
+
         public int TimespanSeconds { get; set; }
     }
 }

@@ -64,7 +64,7 @@ function g() {
         url = url.concat(date);
         url = url.concat("&sync_all");
         loop(url).catch(showAlert);
-    }, 1000);
+    }, 20000);
 }
 
 async function loop(url) {
